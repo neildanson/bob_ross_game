@@ -23,6 +23,7 @@ impl SpriteBatch {
         }
     }
 
+    //TODO - add a reference to the spritesheet!
     pub fn add(&mut self, x: f32, y: f32, sprite_index : usize, spritesheet:&SpriteSheet) {
         let i = self.quads.len() as u32;
         let sprite = spritesheet.coords(sprite_index);
