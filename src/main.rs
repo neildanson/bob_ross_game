@@ -47,13 +47,21 @@ fn draw(display:&Display,
         x + 1.0
     } else { x };
 
+    y = if controller.up {
+        y - 1.0
+    } else { y };
+
+    y = if controller.down {
+        y + 1.0
+    } else { y };
+
     camera.look_at(x, y);
 
     //Draw background
     let x = 0.0f32;
     let y = 0.0f32;
-    for x1 in 0 .. 200 {
-            for y1 in 0 .. 200 {
+    for x1 in 0 .. 100 {
+            for y1 in 0 .. 100 {
                 backgroundpritebatch.add(x + ((16 * x1) as f32), y + ((16 * y1) as f32), backgroundanimation.current_frame, backgroundspritesheet);
             }
         }

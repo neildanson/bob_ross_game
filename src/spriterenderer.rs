@@ -37,8 +37,9 @@ impl <'a> SpriteRenderer<'a> {
                 out vec4 f_color;
                 void main() {
                     vec4 tex_color = texture(tex, v_texcoord);
-                    if (tex_color.z < 0.01) discard;
-                    else f_color = tex_color;
+                    //if (tex_color.z < 0.01) discard;
+                    //else 
+                    f_color = tex_color;
                 }
             "
         },
@@ -49,6 +50,7 @@ impl <'a> SpriteRenderer<'a> {
 
     pub fn draw(&self, frame: &mut Frame, spritebatch : &SpriteBatch, spritesheet : &SpriteSheet, camera : &Camera) {
         let draw_parameters =  DrawParameters {
+            blend: glium::Blend::alpha_blending(),
             .. Default::default()
         }; //TODO create once
         let vertex_buffer = VertexBuffer::new(self.display, &spritebatch.quads).unwrap();
@@ -58,6 +60,7 @@ impl <'a> SpriteRenderer<'a> {
 
         // building the uniforms
         let uniforms = uniform! {
+            
             world: Into::<[[f32;4];4]>::into(camera.world),
             view: Into::<[[f32;4];4]>::into(camera.view),
             projection: Into::<[[f32;4];4]>::into(camera.ortho),
