@@ -1,11 +1,10 @@
-extern crate cgmath;
 extern crate glium;
 
 use glium::{Display, Program,VertexBuffer, IndexBuffer, Frame, Surface, DrawParameters};
 use glium::index::PrimitiveType;
-use cgmath::SquareMatrix; //TODO replace with camera
 use SpriteBatch;
 use SpriteSheet;
+use Camera;
 
 pub struct SpriteRenderer<'a>  { 
     program : Program,
@@ -38,8 +37,8 @@ impl <'a> SpriteRenderer<'a> {
                 out vec4 f_color;
                 void main() {
                     vec4 tex_color = texture(tex, v_texcoord);
-                    //if (tex_color.z < 0.1) discard;
-                    f_color = tex_color;
+                    if (tex_color.z < 0.01) discard;
+                    else f_color = tex_color;
                 }
             "
         },
@@ -48,8 +47,7 @@ impl <'a> SpriteRenderer<'a> {
         SpriteRenderer { display : display, program : program }
     }
 
-    //TODO - dont pass in here & use camera
-    pub fn draw(&self, frame: &mut Frame, spritebatch : &SpriteBatch, spritesheet : &SpriteSheet) {
+    pub fn draw(&self, frame: &mut Frame, spritebatch : &SpriteBatch, spritesheet : &SpriteSheet, camera : &Camera) {
         let draw_parameters =  DrawParameters {
             .. Default::default()
         }; //TODO create once
@@ -58,15 +56,11 @@ impl <'a> SpriteRenderer<'a> {
                                                    PrimitiveType::TrianglesList,
                                                    &spritebatch.indices).unwrap();
 
-
-        let world = cgmath::Matrix4::identity();
-        let view = cgmath::Matrix4::identity();
-        let projection = cgmath::ortho(0.0f32, 320.0f32, 240.0f32, 0.0f32, 0.0f32, 100.0f32);
         // building the uniforms
         let uniforms = uniform! {
-            world: Into::<[[f32;4];4]>::into(world),
-            view: Into::<[[f32;4];4]>::into(view),
-            projection: Into::<[[f32;4];4]>::into(projection),
+            world: Into::<[[f32;4];4]>::into(camera.world),
+            view: Into::<[[f32;4];4]>::into(camera.view),
+            projection: Into::<[[f32;4];4]>::into(camera.ortho),
             tex: spritesheet.texture.sampled().magnify_filter(glium::uniforms::MagnifySamplerFilter::Nearest)
         };
 
