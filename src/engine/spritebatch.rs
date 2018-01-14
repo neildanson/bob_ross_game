@@ -1,4 +1,4 @@
-use spritesheet::SpriteSheet;
+use SpriteSheet;
 
 pub struct SpriteBatch {
     pub quads: Vec<Vertex>,

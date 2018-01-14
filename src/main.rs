@@ -5,22 +5,17 @@ extern crate cgmath;
 extern crate image;
 
 //#![windows_subsystem = "windows"]
-mod controller;
-mod sprite;
-mod spritebatch;
-mod spritesheet;
-mod animation;
-mod spriterenderer;
-mod camera;
+mod engine;
 
-use glium::{Display,glutin, Surface, Texture2d};
+use glium::{Display,glutin, Surface};
+use glium::texture::SrgbTexture2d;
 
-use controller::Controller;
-use spritebatch::SpriteBatch;
-use spritesheet::SpriteSheet;
-use animation::Animation;
-use spriterenderer::SpriteRenderer;
-use camera::Camera;
+use engine::Controller;
+use engine::SpriteBatch;
+use engine::SpriteSheet;
+use engine::Animation;
+use engine::SpriteRenderer;
+use engine::Camera;
 
 fn draw(display:&Display, 
     camera : &mut Camera,
@@ -31,10 +26,10 @@ fn draw(display:&Display,
     animation:&mut Animation,
     backgroundpritebatch : &mut SpriteBatch,
     backgroundspritesheet:&SpriteSheet, 
-    backgroundanimation:&mut Animation,
     ) {
     spritebatch.clear();
     backgroundpritebatch.clear();
+
     animation.update(std::time::SystemTime::now());
 
     let mut x = camera.x;
@@ -62,14 +57,12 @@ fn draw(display:&Display,
     let y = 0.0f32;
     for x1 in 0 .. 100 {
             for y1 in 0 .. 100 {
-                backgroundpritebatch.add(x + ((16 * x1) as f32), y + ((16 * y1) as f32), backgroundanimation.current_frame, backgroundspritesheet);
+                backgroundpritebatch.add(x + ((16 * x1) as f32), y + ((16 * y1) as f32), 0, backgroundspritesheet);
             }
         }
 
     //Draw player
     spritebatch.add(160.0f32, 120.0f32, animation.current_frame, spritesheet);
-
-
 
     let mut target = display.draw();
         target.clear_color(0.0, 0.0, 0.0, 0.0);
@@ -79,12 +72,12 @@ fn draw(display:&Display,
         target.finish().unwrap();
 }
 
-fn load_texture(filename : &str, display : &Display) -> Texture2d {
+fn load_texture(filename : &str, display : &Display) -> SrgbTexture2d {
     let path = std::path::Path::new(&filename);
     let image = image::open(&path).unwrap().to_rgba();
     let image_dimensions = image.dimensions();
     let image = glium::texture::RawImage2d::from_raw_rgba(image.into_raw(), image_dimensions);
-    let opengl_texture = Texture2d::new(display, image).unwrap();
+    let opengl_texture = SrgbTexture2d::new(display, image).unwrap();
     opengl_texture
 }
 
@@ -101,7 +94,6 @@ fn main() {
     let mut playeranimation = Animation::new(4, 64);
     let mut playerspritebatch = SpriteBatch::new();
     let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
-    let mut backgroundanimation = Animation::new(1, 100000000);
     let mut backgroundspritebatch = SpriteBatch::new();
 
     let mut spriterenderer = SpriteRenderer::new(&display);
@@ -145,7 +137,7 @@ fn main() {
             &controller,
             &mut spriterenderer,  
             &mut playerspritebatch, &playerspritesheet, &mut playeranimation,
-            &mut backgroundspritebatch, &backgroundspritesheet, &mut backgroundanimation);
+            &mut backgroundspritebatch, &backgroundspritesheet);
 
     }
 }
