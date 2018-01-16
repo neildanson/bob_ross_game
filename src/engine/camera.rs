@@ -1,8 +1,8 @@
 extern crate cgmath;
 use cgmath::{Matrix4, SquareMatrix};
 pub struct Camera {
-    pub x : f32, //TODO - not pub
-    pub y : f32, //TODO - not pub
+    x : f32, 
+    y : f32, 
     width : f32,
     height : f32,
     pub world : Matrix4<f32>,
@@ -22,7 +22,8 @@ impl Camera {
     pub fn look_at(&mut self, x : f32, y : f32) {
         self.x = x;
         self.y = y;
-        self.ortho = cgmath::ortho(x, x + self.width, y + self.height, y, 0.0f32, 100.0f32);
+        self.ortho = cgmath::ortho(x - self.width / 2.0, x + self.width / 2.0, 
+                                   y + self.height / 2.0, y - self.height / 2.0, 0.0f32, 100.0f32);
     }
 
 }

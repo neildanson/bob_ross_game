@@ -6,18 +6,16 @@ extern crate image;
 
 //#![windows_subsystem = "windows"]
 mod engine;
+mod player;
 
 use glium::{Display,glutin, Surface};
 use glium::texture::SrgbTexture2d;
 
-use engine::Controller;
-use engine::SpriteBatch;
-use engine::SpriteSheet;
-use engine::Animation;
-use engine::SpriteRenderer;
-use engine::Camera;
+use engine::{Animation, Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet};
+use player::Player;
 
-fn draw(display:&Display, 
+fn draw(display:&Display,
+    player:&mut Player,
     camera : &mut Camera,
     controller: &Controller,
     spriterenderer : &mut SpriteRenderer, 
@@ -32,25 +30,23 @@ fn draw(display:&Display,
 
     animation.update(std::time::SystemTime::now());
 
-    let mut x = camera.x;
-    let mut y = camera.y;
-    x = if controller.left {
-        x - 1.0
-    } else { x };
+    player.x = if controller.left {
+        player.x - 1.0
+    } else { player.x };
 
-    x = if controller.right {
-        x + 1.0
-    } else { x };
+    player.x = if controller.right {
+        player.x + 1.0
+    } else { player.x };
 
-    y = if controller.up {
-        y - 1.0
-    } else { y };
+    player.y = if controller.up {
+        player.y - 1.0
+    } else { player.y };
 
-    y = if controller.down {
-        y + 1.0
-    } else { y };
+    player.y = if controller.down {
+        player.y + 1.0
+    } else { player.y };
 
-    camera.look_at(x, y);
+    camera.look_at(player.x, player.y);
 
     //Draw background
     let x = 0.0f32;
@@ -62,7 +58,7 @@ fn draw(display:&Display,
         }
 
     //Draw player
-    spritebatch.add(160.0f32, 120.0f32, animation.current_frame, spritesheet);
+    spritebatch.add(player.x, player.y, animation.current_frame, spritesheet);
 
     let mut target = display.draw();
         target.clear_color(0.0, 0.0, 0.0, 0.0);
@@ -100,6 +96,8 @@ fn main() {
     let mut controller = Controller::new();
     let mut camera = Camera::new(320.0, 240.0);
 
+    let mut player = Player::new();
+
     // the main loop
     let mut closed = false;
     while !closed {
@@ -133,6 +131,7 @@ fn main() {
         });
 
         draw(&display, 
+            &mut player,
             &mut camera,
             &controller,
             &mut spriterenderer,  
