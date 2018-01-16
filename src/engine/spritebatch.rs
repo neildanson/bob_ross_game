@@ -1,18 +1,11 @@
-use SpriteSheet;
+use engine::SpriteSheet;
+use engine::Vertex;
 
 pub struct SpriteBatch {
     pub quads: Vec<Vertex>,
     pub indices: Vec<u32>, /* TODO make internals private
                             * Render via trait */
 }
-
-#[derive(Copy, Clone)]
-pub struct Vertex {
-    position: [f32; 2],
-    tex_coord: [f32; 2],
-}
-
-implement_vertex!(Vertex, position, tex_coord);
 
 impl SpriteBatch {
     pub fn new() -> SpriteBatch {

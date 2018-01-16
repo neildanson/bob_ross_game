@@ -2,16 +2,19 @@ extern crate glium;
 
 use glium::{Display, Program,VertexBuffer, IndexBuffer, Frame, Surface, DrawParameters};
 use glium::index::PrimitiveType;
-use SpriteBatch;
-use SpriteSheet;
-use Camera;
+use engine::SpriteBatch;
+use engine::SpriteSheet;
+use engine::Camera;
+use engine::Vertex;
 
 pub struct SpriteRenderer<'a>  { 
     program : Program,
-    display : &'a Display
+    vertex_buffer : VertexBuffer<Vertex>,
+    index_buffer : IndexBuffer<u32>,
+    draw_parameters : DrawParameters<'a>,
 }
 
-impl <'a> SpriteRenderer<'a> { 
+impl <'a> SpriteRenderer <'a> { 
     pub fn new (display : &Display) -> SpriteRenderer {
         let program = program!(display,
         140 => {
@@ -45,34 +48,51 @@ impl <'a> SpriteRenderer<'a> {
         },
         ).unwrap();
 
-        SpriteRenderer { display : display, program : program }
-    }
+        let vertex_buffer = VertexBuffer::empty_dynamic(display, 200000).unwrap();
+        let index_buffer = IndexBuffer::empty_dynamic(display,
+                                                   PrimitiveType::TrianglesList,
+                                                   200000).unwrap();
 
-    pub fn draw(&self, frame: &mut Frame, spritebatch : &SpriteBatch, spritesheet : &SpriteSheet, camera : &Camera) {
-        let draw_parameters =  DrawParameters {
+        let draw_parameters = DrawParameters {
             blend: glium::Blend::alpha_blending(),
             .. Default::default()
-        }; //TODO create once
-        let vertex_buffer = VertexBuffer::new(self.display, &spritebatch.quads).unwrap();
-        let index_buffer = IndexBuffer::new(self.display,
-                                                   PrimitiveType::TrianglesList,
-                                                   &spritebatch.indices).unwrap();
+        };
 
+
+        SpriteRenderer { draw_parameters : draw_parameters, program : program, 
+                         vertex_buffer : vertex_buffer, index_buffer : index_buffer }
+    }
+
+    pub fn draw(&mut self, frame: &mut Frame, spritebatch : &SpriteBatch, spritesheet : &SpriteSheet, camera : &Camera) {
+        {
+            let mut vb_map = self.vertex_buffer.map_write();
+            for v in 0 .. spritebatch.quads.len() {
+                vb_map.set(v, spritebatch.quads[v])
+                //vb_map.write(&spritebatch.quads);
+            }
+            //let vertex_buffer = VertexBuffer::new(self.display, &spritebatch.quads).unwrap();
+            let mut ib_map = self.index_buffer.map_write();
+            for i in 0 .. spritebatch.indices.len() {
+                ib_map.set(i,spritebatch.indices[i]);
+            }
+        }
         // building the uniforms
         let uniforms = uniform! {
-            
             world: Into::<[[f32;4];4]>::into(camera.world),
             view: Into::<[[f32;4];4]>::into(camera.view),
             projection: Into::<[[f32;4];4]>::into(camera.ortho),
             tex: spritesheet.texture.sampled().magnify_filter(glium::uniforms::MagnifySamplerFilter::Nearest)
         };
 
+        //let vb_slice = self.vertex_buffer.slice(0 .. spritebatch.quads.len()).unwrap();
+        let ib_slice = self.index_buffer.slice(0 .. spritebatch.indices.len()).unwrap();
+
         frame.draw(
-                  &vertex_buffer,
-                  &index_buffer,
+                  &self.vertex_buffer,
+                  &ib_slice,
                   &self.program,
                   &uniforms,
-                  &draw_parameters)
+                  &self.draw_parameters)
             .unwrap();
     }
 }
