@@ -64,18 +64,9 @@ impl <'a> SpriteRenderer <'a> {
     }
 
     pub fn draw(&mut self, frame: &mut Frame, spritebatch : &SpriteBatch, spritesheet : &SpriteSheet, camera : &Camera) {
-        {
-            let mut vb_map = self.vertex_buffer.map_write();
-            for v in 0 .. spritebatch.quads.len() {
-                vb_map.set(v, spritebatch.quads[v])
-                //vb_map.write(&spritebatch.quads);
-            }
-            //let vertex_buffer = VertexBuffer::new(self.display, &spritebatch.quads).unwrap();
-            let mut ib_map = self.index_buffer.map_write();
-            for i in 0 .. spritebatch.indices.len() {
-                ib_map.set(i,spritebatch.indices[i]);
-            }
-        }
+        self.index_buffer.as_mut_slice().write(&spritebatch.indices);
+        self.vertex_buffer.as_mut_slice().write(&spritebatch.quads);
+
         // building the uniforms
         let uniforms = uniform! {
             world: Into::<[[f32;4];4]>::into(camera.world),
