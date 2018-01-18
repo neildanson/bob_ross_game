@@ -8,6 +8,8 @@ extern crate image;
 mod engine;
 mod player;
 
+use std::time::SystemTime;
+
 use glium::{Display,glutin, Surface};
 use glium::texture::SrgbTexture2d;
 
@@ -21,32 +23,15 @@ fn draw(display:&Display,
     spriterenderer : &mut SpriteRenderer, 
     spritebatch:&mut SpriteBatch, 
     spritesheet:&SpriteSheet, 
-    animation:&mut Animation,
     backgroundpritebatch : &mut SpriteBatch,
     backgroundspritesheet:&SpriteSheet, 
     ) {
     spritebatch.clear();
     backgroundpritebatch.clear();
 
-    animation.update(std::time::SystemTime::now());
-
-    player.x = if controller.left {
-        player.x - 1.0
-    } else { player.x };
-
-    player.x = if controller.right {
-        player.x + 1.0
-    } else { player.x };
-
-    player.y = if controller.up {
-        player.y - 1.0
-    } else { player.y };
-
-    player.y = if controller.down {
-        player.y + 1.0
-    } else { player.y };
-
     camera.look_at(player.x, player.y);
+
+    player.update(controller, SystemTime::now());
 
     //Draw background
     let x = 0.0f32;
@@ -58,7 +43,7 @@ fn draw(display:&Display,
         }
 
     //Draw player
-    spritebatch.add(player.x, player.y, animation.current_frame, spritesheet, camera);
+    spritebatch.add(player.x, player.y, player.currect_animation.current_frame, spritesheet, camera);
 
     let mut target = display.draw();
         target.clear_color(0.0, 0.0, 0.0, 0.0);
@@ -83,11 +68,11 @@ fn main() {
     let context = glutin::ContextBuilder::new();
     let display = glium::Display::new(window, context, &events_loop).unwrap();
 
-    let player = load_texture("Walk.png", &display);
+    let player = load_texture("Dude.png", &display);
     let background = load_texture("Background.png", &display);
     
     let playerspritesheet = SpriteSheet::new(player, 4, 4);
-    let mut playeranimation = Animation::new(4, 64);
+    let playeranimation = Animation::new(0, 4, 64);
     let mut playerspritebatch = SpriteBatch::new();
     let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
     let mut backgroundspritebatch = SpriteBatch::new();
@@ -96,7 +81,7 @@ fn main() {
     let mut controller = Controller::new();
     let mut camera = Camera::new(320.0, 240.0);
 
-    let mut player = Player::new();
+    let mut player = Player::new(playeranimation);
 
     // the main loop
     let mut closed = false;
@@ -135,7 +120,7 @@ fn main() {
             &mut camera,
             &controller,
             &mut spriterenderer,  
-            &mut playerspritebatch, &playerspritesheet, &mut playeranimation,
+            &mut playerspritebatch, &playerspritesheet,
             &mut backgroundspritebatch, &backgroundspritesheet);
 
     }
