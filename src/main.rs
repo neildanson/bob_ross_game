@@ -51,14 +51,14 @@ fn draw(display:&Display,
     //Draw background
     let x = 0.0f32;
     let y = 0.0f32;
-    for x1 in 0 .. 100 {
-            for y1 in 0 .. 100 {
-                backgroundpritebatch.add(x + ((16 * x1) as f32), y + ((16 * y1) as f32), 0, backgroundspritesheet);
+    for x1 in 0 .. 500 {
+            for y1 in 0 .. 500 {
+                backgroundpritebatch.add(x + ((16 * x1) as f32), y + ((16 * y1) as f32), 0, backgroundspritesheet, camera);
             }
         }
 
     //Draw player
-    spritebatch.add(player.x, player.y, animation.current_frame, spritesheet);
+    spritebatch.add(player.x, player.y, animation.current_frame, spritesheet, camera);
 
     let mut target = display.draw();
         target.clear_color(0.0, 0.0, 0.0, 0.0);

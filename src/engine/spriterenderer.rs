@@ -64,26 +64,28 @@ impl <'a> SpriteRenderer <'a> {
     }
 
     pub fn draw(&mut self, frame: &mut Frame, spritebatch : &SpriteBatch, spritesheet : &SpriteSheet, camera : &Camera) {
-        self.index_buffer.as_mut_slice().write(&spritebatch.indices);
-        self.vertex_buffer.as_mut_slice().write(&spritebatch.quads);
+        if spritebatch.indices.len() > 0 {
+            self.index_buffer.as_mut_slice().write(&spritebatch.indices);
+            self.vertex_buffer.as_mut_slice().write(&spritebatch.quads);
 
-        // building the uniforms
-        let uniforms = uniform! {
-            world: Into::<[[f32;4];4]>::into(camera.world),
-            view: Into::<[[f32;4];4]>::into(camera.view),
-            projection: Into::<[[f32;4];4]>::into(camera.ortho),
-            tex: spritesheet.texture.sampled().magnify_filter(glium::uniforms::MagnifySamplerFilter::Nearest)
-        };
+            // building the uniforms
+            let uniforms = uniform! {
+                world: Into::<[[f32;4];4]>::into(camera.world),
+                view: Into::<[[f32;4];4]>::into(camera.view),
+                projection: Into::<[[f32;4];4]>::into(camera.ortho),
+                tex: spritesheet.texture.sampled().magnify_filter(glium::uniforms::MagnifySamplerFilter::Nearest)
+            };
 
-        //let vb_slice = self.vertex_buffer.slice(0 .. spritebatch.quads.len()).unwrap();
-        let ib_slice = self.index_buffer.slice(0 .. spritebatch.indices.len()).unwrap();
+            //let vb_slice = self.vertex_buffer.slice(0 .. spritebatch.quads.len()).unwrap();
+            let ib_slice = self.index_buffer.slice(0 .. spritebatch.indices.len()).unwrap();
 
-        frame.draw(
-                  &self.vertex_buffer,
-                  &ib_slice,
-                  &self.program,
-                  &uniforms,
-                  &self.draw_parameters)
-            .unwrap();
+            frame.draw(
+                    &self.vertex_buffer,
+                    &ib_slice,
+                    &self.program,
+                    &uniforms,
+                    &self.draw_parameters)
+                .unwrap();
+        }
     }
 }
