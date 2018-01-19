@@ -19,11 +19,11 @@ pub struct Player {
 impl Player {
     pub fn new() -> Player {
         let animations = [
-            Animation::new(0, 4, 64),   //Walk Right
-            Animation::new(4, 4, 128),  //Walk Down
-            Animation::new(8, 4, 64),   //Walk Left
-            Animation::new(12, 4, 128), //Walk Up
-            Animation::new(4, 1, 128),
+            Animation::new(0, 4, 100),   //Walk Right
+            Animation::new(4, 4, 200),  //Walk Down
+            Animation::new(8, 4, 100),   //Walk Left
+            Animation::new(12, 4, 200), //Walk Up
+            Animation::new(16, 2, 500), //Idle
         ];
         Player {
             x: 0.0,
@@ -40,7 +40,7 @@ impl Player {
         self.x = if controller.left {
             key_pressed = true;
             self.direction = Direction::Left;
-            self.x - 1.0
+            self.x - 2.0
         } else {
             self.x
         };
@@ -48,7 +48,7 @@ impl Player {
         self.x = if controller.right {
             key_pressed = true;
             self.direction = Direction::Right;
-            self.x + 1.0
+            self.x + 2.0
         } else {
             self.x
         };
@@ -56,7 +56,7 @@ impl Player {
         self.y = if controller.up {
             key_pressed = true;
             self.direction = Direction::Up;
-            self.y - 1.0
+            self.y - 2.0
         } else {
             self.y
         };
@@ -64,7 +64,7 @@ impl Player {
         self.y = if controller.down {
             key_pressed = true;
             self.direction = Direction::Down;
-            self.y + 1.0
+            self.y + 2.0
         } else {
             self.y
         };

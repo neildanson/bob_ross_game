@@ -28,10 +28,8 @@ fn draw(
 ) {
     spritebatch.clear();
     backgroundpritebatch.clear();
-
-    camera.look_at(player.x, player.y);
-
     player.update(controller, SystemTime::now());
+    camera.look_at(player.x, player.y);
 
     //Draw background
     let x = 0.0f32;
@@ -80,14 +78,16 @@ fn load_texture(filename: &str, display: &Display) -> SrgbTexture2d {
 
 fn main() {
     let mut events_loop = glutin::EventsLoop::new();
-    let window = glutin::WindowBuilder::new();
-    let context = glutin::ContextBuilder::new();
+    let window = glutin::WindowBuilder::new()
+        .with_dimensions(1024, 768)
+        .with_title("Bob Ross");
+    let context = glutin::ContextBuilder::new().with_vsync(true);
     let display = glium::Display::new(window, context, &events_loop).unwrap();
 
     let player = load_texture("Dude.png", &display);
     let background = load_texture("Background.png", &display);
 
-    let playerspritesheet = SpriteSheet::new(player, 4, 4);
+    let playerspritesheet = SpriteSheet::new(player, 4, 5);
     let mut playerspritebatch = SpriteBatch::new();
     let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
     let mut backgroundspritebatch = SpriteBatch::new();
