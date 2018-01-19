@@ -48,10 +48,10 @@ impl <'a> SpriteRenderer <'a> {
         },
         ).unwrap();
 
-        let vertex_buffer = VertexBuffer::empty_dynamic(display, 200000).unwrap();
+        let vertex_buffer = VertexBuffer::empty_dynamic(display, 200_000).unwrap();
         let index_buffer = IndexBuffer::empty_dynamic(display,
                                                    PrimitiveType::TrianglesList,
-                                                   200000).unwrap();
+                                                   200_000).unwrap();
 
         let draw_parameters = DrawParameters {
             blend: glium::Blend::alpha_blending(),
@@ -64,7 +64,7 @@ impl <'a> SpriteRenderer <'a> {
     }
 
     pub fn draw(&mut self, frame: &mut Frame, spritebatch : &SpriteBatch, spritesheet : &SpriteSheet, camera : &Camera) {
-        if spritebatch.indices.len() > 0 {
+        if !spritebatch.indices.is_empty() {
             self.index_buffer.as_mut_slice().write(&spritebatch.indices);
             self.vertex_buffer.as_mut_slice().write(&spritebatch.quads);
 

@@ -58,8 +58,7 @@ fn load_texture(filename : &str, display : &Display) -> SrgbTexture2d {
     let image = image::open(&path).unwrap().to_rgba();
     let image_dimensions = image.dimensions();
     let image = glium::texture::RawImage2d::from_raw_rgba(image.into_raw(), image_dimensions);
-    let opengl_texture = SrgbTexture2d::new(display, image).unwrap();
-    opengl_texture
+    SrgbTexture2d::new(display, image).unwrap()
 }
 
 fn main() {
@@ -72,7 +71,7 @@ fn main() {
     let background = load_texture("Background.png", &display);
     
     let playerspritesheet = SpriteSheet::new(player, 4, 4);
-    let playeranimation = Animation::new(0, 4, 64);
+    let playeranimation = Animation::new(4, 4, 128);
     let mut playerspritebatch = SpriteBatch::new();
     let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
     let mut backgroundspritebatch = SpriteBatch::new();

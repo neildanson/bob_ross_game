@@ -21,7 +21,7 @@ impl SpriteBatch {
         let sprite_boundingbox = BoundingBox::new(x, y, sprite.width, sprite.height);
         if camera.boundingbox.intersects(&sprite_boundingbox) {
             let i = self.quads.len() as u32;
-            for v in SpriteBatch::quad(x, y, sprite.width, sprite.height, sprite.coords).iter() {
+            for v in &SpriteBatch::quad(x, y, sprite.width, sprite.height, sprite.coords) {
                 self.quads.push(v.clone());
             }
 

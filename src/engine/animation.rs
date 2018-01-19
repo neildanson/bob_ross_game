@@ -20,7 +20,7 @@ impl Animation {
     pub fn update(&mut self, now : SystemTime) {
         if now.duration_since(self.last_update_time).unwrap() >= self.frame_interval {
             self.last_update_time = now;
-            self.current_frame = if self.current_frame < self.num_frames - 1 {
+            self.current_frame = if self.current_frame < self.base_frame + self.num_frames - 1 {
                 self.current_frame + 1
             } else {
                 self.base_frame
