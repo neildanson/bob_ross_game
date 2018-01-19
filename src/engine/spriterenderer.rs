@@ -40,18 +40,16 @@ impl <'a> SpriteRenderer <'a> {
                 out vec4 f_color;
                 void main() {
                     vec4 tex_color = texture(tex, v_texcoord);
-                    //if (tex_color.z < 0.01) discard;
-                    //else 
                     f_color = tex_color;
                 }
             "
         },
         ).unwrap();
 
-        let vertex_buffer = VertexBuffer::empty_dynamic(display, 200_000).unwrap();
+        let vertex_buffer = VertexBuffer::empty_dynamic(display, 20_000).unwrap();
         let index_buffer = IndexBuffer::empty_dynamic(display,
                                                    PrimitiveType::TrianglesList,
-                                                   200_000).unwrap();
+                                                   20_000).unwrap();
 
         let draw_parameters = DrawParameters {
             blend: glium::Blend::alpha_blending(),

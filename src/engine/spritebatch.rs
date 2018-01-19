@@ -21,9 +21,26 @@ impl SpriteBatch {
         let sprite_boundingbox = BoundingBox::new(x, y, sprite.width, sprite.height);
         if camera.boundingbox.intersects(&sprite_boundingbox) {
             let i = self.quads.len() as u32;
-            for v in &SpriteBatch::quad(x, y, sprite.width, sprite.height, sprite.coords) {
-                self.quads.push(v.clone());
-            }
+            self.quads.push(
+                Vertex {
+                    position: [x, y],
+                    tex_coord: sprite.tex_coords[0],
+                });
+            self.quads.push(
+                Vertex {
+                    position: [x, y + sprite.height],
+                    tex_coord: sprite.tex_coords[1],
+                });
+            self.quads.push(
+                Vertex {
+                    position: [x + sprite.width, y + sprite.height],
+                    tex_coord: sprite.tex_coords[2],
+                });
+            self.quads.push(
+                Vertex {
+                    position: [x + sprite.width, y],
+                    tex_coord: sprite.tex_coords[3],
+                });
 
             self.indices.push(i);
             self.indices.push(i + 1);
@@ -37,25 +54,5 @@ impl SpriteBatch {
     pub fn clear(&mut self) {
         self.indices.clear();
         self.quads.clear();
-    }
-
-
-    fn quad(x: f32, y: f32, width: f32, height: f32, tex_coords : [[f32;2];4]) -> [Vertex; 4] {
-        [Vertex {
-             position: [x, y],
-             tex_coord: tex_coords[0],
-         },
-         Vertex {
-             position: [x, y + height],
-             tex_coord: tex_coords[1],
-         },
-         Vertex {
-             position: [x + width, y + height],
-             tex_coord: tex_coords[2],
-         },
-         Vertex {
-             position: [x + width, y],
-             tex_coord: tex_coords[3],
-         }]
     }
 }
