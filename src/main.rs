@@ -1,4 +1,3 @@
-
 #[macro_use]
 extern crate glium;
 extern crate cgmath;
@@ -13,7 +12,7 @@ use std::time::SystemTime;
 use glium::{Display,glutin, Surface};
 use glium::texture::SrgbTexture2d;
 
-use engine::{Animation, Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet};
+use engine::{Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet};
 use player::Player;
 
 fn draw(display:&Display,
@@ -43,7 +42,7 @@ fn draw(display:&Display,
         }
 
     //Draw player
-    spritebatch.add(player.x, player.y, player.currect_animation.current_frame, spritesheet, camera);
+    spritebatch.add(player.x, player.y, player.current_animation.current_frame, spritesheet, camera);
 
     let mut target = display.draw();
         target.clear_color(0.0, 0.0, 0.0, 0.0);
@@ -71,7 +70,6 @@ fn main() {
     let background = load_texture("Background.png", &display);
     
     let playerspritesheet = SpriteSheet::new(player, 4, 4);
-    let playeranimation = Animation::new(4, 4, 128);
     let mut playerspritebatch = SpriteBatch::new();
     let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
     let mut backgroundspritebatch = SpriteBatch::new();
@@ -80,37 +78,32 @@ fn main() {
     let mut controller = Controller::new();
     let mut camera = Camera::new(320.0, 240.0);
 
-    let mut player = Player::new(playeranimation);
+    let mut player = Player::new();
 
     // the main loop
     let mut closed = false;
     while !closed {
         events_loop.poll_events(|event| {
-            match event {
-                glutin::Event::WindowEvent { event, .. } => {
-                    match event {
-                        // Break from the main loop when the window is closed.
-                        glutin::WindowEvent::Closed => closed = true,
-                        // Redraw the triangle when the window is resized.
-                        // glutin::WindowEvent::Resized(..) => draw(rot),
-                        glutin::WindowEvent::KeyboardInput { input, .. } => {
-                            if input.virtual_keycode == Some(glutin::VirtualKeyCode::Left) {
-                                controller.left = input.state == glutin::ElementState::Pressed;
-                            }
-                            if input.virtual_keycode == Some(glutin::VirtualKeyCode::Right) {
-                                controller.right = input.state == glutin::ElementState::Pressed;
-                            }
-                            if input.virtual_keycode == Some(glutin::VirtualKeyCode::Up) {
-                                controller.up = input.state == glutin::ElementState::Pressed;
-                            }
-                            if input.virtual_keycode == Some(glutin::VirtualKeyCode::Down) {
-                                controller.down = input.state == glutin::ElementState::Pressed;
-                            }
+            if let  glutin::Event::WindowEvent { event, .. } = event {                
+                match event {
+                    // Break from the main loop when the window is closed.
+                    glutin::WindowEvent::Closed => closed = true,
+                    glutin::WindowEvent::KeyboardInput { input, .. } => {
+                        if input.virtual_keycode == Some(glutin::VirtualKeyCode::Left) {
+                            controller.left = input.state == glutin::ElementState::Pressed;
                         }
-                        _ => (),
+                        if input.virtual_keycode == Some(glutin::VirtualKeyCode::Right) {
+                            controller.right = input.state == glutin::ElementState::Pressed;
+                        }
+                        if input.virtual_keycode == Some(glutin::VirtualKeyCode::Up) {
+                            controller.up = input.state == glutin::ElementState::Pressed;
+                        }
+                        if input.virtual_keycode == Some(glutin::VirtualKeyCode::Down) {
+                            controller.down = input.state == glutin::ElementState::Pressed;
+                        }
                     }
+                    _ => (),
                 }
-                _ => (),
             }
         });
 

@@ -11,37 +11,64 @@ pub enum Direction {
 pub struct Player {
     pub x : f32,
     pub y : f32,
-    pub currect_animation : Animation,
+    pub current_animation : Animation,
+    animations : [Animation;5],
     direction : Direction,
 }
 
 impl Player {
-    pub fn new(animation : Animation) -> Player {
-
-        Player { x: 0.0, y : 0.0, direction : Direction::Right, currect_animation : animation }
+    pub fn new() -> Player {
+        let animations =  [
+                Animation::new(0,4,64), //Walk Right
+                Animation::new(4,4,128), //Walk Down
+                Animation::new(8, 4, 64), //Walk Left
+                Animation::new(12, 4, 128), //Walk Up
+                Animation::new(4,1,128) ];
+        Player { x: 0.0, y : 0.0, direction : Direction::Right, current_animation : animations[4],
+                 animations :animations }
     }
 
     pub fn update(&mut self, controller:&Controller, update_time:SystemTime) {
-        self.currect_animation.update(update_time);
+        let mut key_pressed = false;
 
         self.x = if controller.left {
+            key_pressed = true;
             self.direction = Direction::Left;
             self.x - 1.0
         } else { self.x };
 
         self.x = if controller.right {
+            key_pressed = true;
             self.direction = Direction::Right;
             self.x + 1.0
         } else { self.x };
 
         self.y = if controller.up {
+            key_pressed = true;
             self.direction = Direction::Up;
             self.y - 1.0
         } else { self.y };
 
         self.y = if controller.down {
+            key_pressed = true;
             self.direction = Direction::Down;
             self.y + 1.0
         } else { self.y };
+
+        if !key_pressed {
+            self.current_animation = self.animations[4];
+        } else {
+            self.current_animation = 
+                match self.direction {
+                    Direction::Right => self.animations[0],
+                    Direction::Down => self.animations[1],
+                    Direction::Left => self.animations[2],
+                    Direction::Up => self.animations[3],
+
+            }
+        }
+        for a in &mut self.animations {
+            a.update(update_time);
+        }
     }
 }

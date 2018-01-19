@@ -1,5 +1,6 @@
 use std::time::{SystemTime, Duration};
 
+#[derive(Copy, Clone)]
 pub struct Animation {
     pub current_frame : usize,
     base_frame : usize,
