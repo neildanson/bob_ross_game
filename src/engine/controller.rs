@@ -1,4 +1,3 @@
-
 pub struct Controller {
     pub left: bool,
     pub right: bool,

@@ -1,6 +1,6 @@
+extern crate cgmath;
 #[macro_use]
 extern crate glium;
-extern crate cgmath;
 extern crate image;
 
 //#![windows_subsystem = "windows"]
@@ -9,22 +9,23 @@ mod player;
 
 use std::time::SystemTime;
 
-use glium::{Display,glutin, Surface};
+use glium::{glutin, Display, Surface};
 use glium::texture::SrgbTexture2d;
 
 use engine::{Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet};
 use player::Player;
 
-fn draw(display:&Display,
-    player:&mut Player,
-    camera : &mut Camera,
+fn draw(
+    display: &Display,
+    player: &mut Player,
+    camera: &mut Camera,
     controller: &Controller,
-    spriterenderer : &mut SpriteRenderer, 
-    spritebatch:&mut SpriteBatch, 
-    spritesheet:&SpriteSheet, 
-    backgroundpritebatch : &mut SpriteBatch,
-    backgroundspritesheet:&SpriteSheet, 
-    ) {
+    spriterenderer: &mut SpriteRenderer,
+    spritebatch: &mut SpriteBatch,
+    spritesheet: &SpriteSheet,
+    backgroundpritebatch: &mut SpriteBatch,
+    backgroundspritesheet: &SpriteSheet,
+) {
     spritebatch.clear();
     backgroundpritebatch.clear();
 
@@ -35,24 +36,41 @@ fn draw(display:&Display,
     //Draw background
     let x = 0.0f32;
     let y = 0.0f32;
-    for x1 in 0 .. 500 {
-            for y1 in 0 .. 500 {
-                backgroundpritebatch.add(x + ((16 * x1) as f32), y + ((16 * y1) as f32), 0, backgroundspritesheet, camera);
-            }
+    for x1 in 0..500 {
+        for y1 in 0..500 {
+            backgroundpritebatch.add(
+                x + ((16 * x1) as f32),
+                y + ((16 * y1) as f32),
+                0,
+                backgroundspritesheet,
+                camera,
+            );
         }
+    }
 
     //Draw player
-    spritebatch.add(player.x, player.y, player.current_animation.current_frame, spritesheet, camera);
+    spritebatch.add(
+        player.x,
+        player.y,
+        player.current_animation.current_frame,
+        spritesheet,
+        camera,
+    );
 
     let mut target = display.draw();
-        target.clear_color(0.0, 0.0, 0.0, 0.0);
-        spriterenderer.draw(&mut target, backgroundpritebatch, backgroundspritesheet, camera);
-        spriterenderer.draw(&mut target, spritebatch, spritesheet, camera);
+    target.clear_color(0.0, 0.0, 0.0, 0.0);
+    spriterenderer.draw(
+        &mut target,
+        backgroundpritebatch,
+        backgroundspritesheet,
+        camera,
+    );
+    spriterenderer.draw(&mut target, spritebatch, spritesheet, camera);
 
-        target.finish().unwrap();
+    target.finish().unwrap();
 }
 
-fn load_texture(filename : &str, display : &Display) -> SrgbTexture2d {
+fn load_texture(filename: &str, display: &Display) -> SrgbTexture2d {
     let path = std::path::Path::new(&filename);
     let image = image::open(&path).unwrap().to_rgba();
     let image_dimensions = image.dimensions();
@@ -68,7 +86,7 @@ fn main() {
 
     let player = load_texture("Dude.png", &display);
     let background = load_texture("Background.png", &display);
-    
+
     let playerspritesheet = SpriteSheet::new(player, 4, 4);
     let mut playerspritebatch = SpriteBatch::new();
     let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
@@ -84,7 +102,7 @@ fn main() {
     let mut closed = false;
     while !closed {
         events_loop.poll_events(|event| {
-            if let  glutin::Event::WindowEvent { event, .. } = event {                
+            if let glutin::Event::WindowEvent { event, .. } = event {
                 match event {
                     // Break from the main loop when the window is closed.
                     glutin::WindowEvent::Closed => closed = true,
@@ -107,13 +125,16 @@ fn main() {
             }
         });
 
-        draw(&display, 
+        draw(
+            &display,
             &mut player,
             &mut camera,
             &controller,
-            &mut spriterenderer,  
-            &mut playerspritebatch, &playerspritesheet,
-            &mut backgroundspritebatch, &backgroundspritesheet);
-
+            &mut spriterenderer,
+            &mut playerspritebatch,
+            &playerspritesheet,
+            &mut backgroundspritebatch,
+            &backgroundspritesheet,
+        );
     }
 }
