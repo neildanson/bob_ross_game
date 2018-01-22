@@ -12,7 +12,7 @@ use std::time::SystemTime;
 use glium::{glutin, Display, Surface};
 use glium::texture::SrgbTexture2d;
 
-use engine::{Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet};
+use engine::{Audio, Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet};
 use player::Player;
 
 fn draw(
@@ -97,6 +97,8 @@ fn main() {
     let mut camera = Camera::new(320.0, 240.0);
 
     let mut player = Player::new();
+    let audio = Audio::new("MainTheme.ogg");
+    audio.play();
 
     // the main loop
     let mut closed = false;

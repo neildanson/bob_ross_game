@@ -1,4 +1,4 @@
-use engine::{Animation, Controller};
+use engine::{Animation, Audio, Controller};
 use std::time::SystemTime;
 
 pub enum Direction {
@@ -14,10 +14,13 @@ pub struct Player {
     pub current_animation: Animation,
     animations: [Animation; 5],
     direction: Direction,
+    audio : Audio,
 }
 
 impl Player {
     pub fn new() -> Player {
+        let audio = Audio::new("Walk.wav");
+
         let animations = [
             Animation::new(0, 4, 100),   //Walk Right
             Animation::new(4, 4, 200),  //Walk Down
@@ -31,6 +34,7 @@ impl Player {
             direction: Direction::Right,
             current_animation: animations[4],
             animations: animations,
+            audio : audio
         }
     }
 
@@ -71,7 +75,9 @@ impl Player {
 
         if !key_pressed {
             self.current_animation = self.animations[4];
+            self.audio.pause();
         } else {
+            self.audio.play();
             self.current_animation = match self.direction {
                 Direction::Right => self.animations[0],
                 Direction::Down => self.animations[1],
