@@ -2,10 +2,13 @@ extern crate cgmath;
 #[macro_use]
 extern crate glium;
 extern crate image;
+extern crate rand;
 
 //#![windows_subsystem = "windows"]
 mod engine;
 mod player;
+mod squirrel;
+mod direction;
 
 use std::time::SystemTime;
 
@@ -14,10 +17,12 @@ use glium::texture::SrgbTexture2d;
 
 use engine::{Audio, Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet};
 use player::Player;
+use squirrel::Squirrel;
 
 fn draw(
     display: &Display,
     player: &mut Player,
+    squirrels:&mut [Squirrel],
     camera: &mut Camera,
     controller: &Controller,
     spriterenderer: &mut SpriteRenderer,
@@ -25,10 +30,14 @@ fn draw(
     spritesheet: &SpriteSheet,
     backgroundpritebatch: &mut SpriteBatch,
     backgroundspritesheet: &SpriteSheet,
+    squirrelspritebatch: &mut SpriteBatch,
+    squirrelspritesheet : &SpriteSheet
 ) {
+    let update_time = SystemTime::now();
     spritebatch.clear();
     backgroundpritebatch.clear();
-    player.update(controller, SystemTime::now());
+    squirrelspritebatch.clear();
+    player.update(controller, update_time);
     camera.look_at(player.x, player.y);
 
     //Draw background
@@ -44,6 +53,18 @@ fn draw(
                 camera,
             );
         }
+    }
+
+    //Draw Squirrels
+    for squirrel in &mut squirrels.into_iter() {
+        squirrel.update(update_time);
+        squirrelspritebatch.add(
+        squirrel.x,
+        squirrel.y,
+        squirrel.current_animation.current_frame,
+        squirrelspritesheet,
+        camera,
+    );
     }
 
     //Draw player
@@ -63,6 +84,7 @@ fn draw(
         backgroundspritesheet,
         camera,
     );
+    spriterenderer.draw(&mut target, squirrelspritebatch, squirrelspritesheet, camera);
     spriterenderer.draw(&mut target, spritebatch, spritesheet, camera);
 
     target.finish().unwrap();
@@ -84,20 +106,28 @@ fn main() {
     let context = glutin::ContextBuilder::new().with_vsync(true);
     let display = glium::Display::new(window, context, &events_loop).unwrap();
 
-    let player = load_texture("Dude.png", &display);
-    let background = load_texture("Background.png", &display);
+    let player = load_texture("./Assets/Graphics/Dude.png", &display);
+    let background = load_texture("./Assets/Graphics/Background.png", &display);
+    let squirrel = load_texture("./Assets/Graphics/Squirrel.png", &display);
 
     let playerspritesheet = SpriteSheet::new(player, 4, 5);
     let mut playerspritebatch = SpriteBatch::new();
     let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
     let mut backgroundspritebatch = SpriteBatch::new();
+    let squirrelspritesheet = SpriteSheet::new(squirrel, 4, 4);
+    let mut squirrelspritebatch = SpriteBatch::new();
 
     let mut spriterenderer = SpriteRenderer::new(&display);
     let mut controller = Controller::new();
     let mut camera = Camera::new(320.0, 240.0);
 
     let mut player = Player::new();
-    let audio = Audio::new("MainTheme.ogg");
+    let mut squirrels = Vec::new();
+    for _ in 0 .. 5000 {
+        squirrels.push(Squirrel::new());
+    }
+
+    let audio = Audio::new("./Assets/Audio/MainTheme.ogg");
     audio.play();
 
     // the main loop
@@ -130,6 +160,7 @@ fn main() {
         draw(
             &display,
             &mut player,
+            &mut squirrels,
             &mut camera,
             &controller,
             &mut spriterenderer,
@@ -137,6 +168,8 @@ fn main() {
             &playerspritesheet,
             &mut backgroundspritebatch,
             &backgroundspritesheet,
+            &mut squirrelspritebatch,
+            &squirrelspritesheet
         );
     }
 }

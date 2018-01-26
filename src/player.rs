@@ -1,12 +1,7 @@
 use engine::{Animation, Audio, Controller};
 use std::time::SystemTime;
+use direction::Direction;
 
-pub enum Direction {
-    Left,
-    Right,
-    Up,
-    Down,
-}
 
 pub struct Player {
     pub x: f32,
@@ -19,7 +14,7 @@ pub struct Player {
 
 impl Player {
     pub fn new() -> Player {
-        let audio = Audio::new("Walk.wav");
+        let audio = Audio::new("./Assets/Audio/Walk.wav");
 
         let animations = [
             Animation::new(0, 4, 100),   //Walk Right
