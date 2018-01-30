@@ -19,24 +19,20 @@ use engine::{Audio, Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet
 use player::Player;
 use squirrel::Squirrel;
 
-fn draw(
+fn draw<'a>(
     display: &Display,
     player: &mut Player,
     squirrels:&mut [Squirrel],
     camera: &mut Camera,
     controller: &Controller,
     spriterenderer: &mut SpriteRenderer,
-    spritebatch: &mut SpriteBatch,
-    spritesheet: &SpriteSheet,
-    backgroundpritebatch: &mut SpriteBatch,
-    backgroundspritesheet: &SpriteSheet,
-    squirrelspritebatch: &mut SpriteBatch,
-    squirrelspritesheet : &SpriteSheet
+    spritebatch: &'a mut SpriteBatch<'a>,
+    spritesheet: &'a SpriteSheet,
+    backgroundspritesheet: &'a SpriteSheet,
+    squirrelspritesheet : &'a SpriteSheet
 ) {
     let update_time = SystemTime::now();
     spritebatch.clear();
-    backgroundpritebatch.clear();
-    squirrelspritebatch.clear();
     player.update(controller, update_time);
     camera.look_at(player.x, player.y);
 
@@ -45,7 +41,7 @@ fn draw(
     let y = 0.0f32;
     for x1 in 0..500 {
         for y1 in 0..500 {
-            backgroundpritebatch.add(
+            spritebatch.add(
                 x + ((16 * x1) as f32),
                 y + ((16 * y1) as f32),
                 0,
@@ -58,13 +54,13 @@ fn draw(
     //Draw Squirrels
     for squirrel in &mut squirrels.into_iter() {
         squirrel.update(update_time);
-        squirrelspritebatch.add(
+        spritebatch.add(
         squirrel.x,
         squirrel.y,
         squirrel.current_animation.current_frame,
         squirrelspritesheet,
         camera,
-    );
+    )
     }
 
     //Draw player
@@ -78,14 +74,8 @@ fn draw(
 
     let mut target = display.draw();
     target.clear_color(0.0, 0.0, 0.0, 0.0);
-    spriterenderer.draw(
-        &mut target,
-        backgroundpritebatch,
-        backgroundspritesheet,
-        camera,
-    );
-    spriterenderer.draw(&mut target, squirrelspritebatch, squirrelspritesheet, camera);
-    spriterenderer.draw(&mut target, spritebatch, spritesheet, camera);
+
+    spriterenderer.draw(&mut target, spritebatch, camera);
 
     target.finish().unwrap();
 }
@@ -111,11 +101,9 @@ fn main() {
     let squirrel = load_texture("./Assets/Graphics/Squirrel.png", &display);
 
     let playerspritesheet = SpriteSheet::new(player, 4, 5);
-    let mut playerspritebatch = SpriteBatch::new();
+    let mut spritebatch = SpriteBatch::new();
     let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
-    let mut backgroundspritebatch = SpriteBatch::new();
     let squirrelspritesheet = SpriteSheet::new(squirrel, 4, 4);
-    let mut squirrelspritebatch = SpriteBatch::new();
 
     let mut spriterenderer = SpriteRenderer::new(&display);
     let mut controller = Controller::new();
@@ -164,11 +152,9 @@ fn main() {
             &mut camera,
             &controller,
             &mut spriterenderer,
-            &mut playerspritebatch,
+            &mut spritebatch,
             &playerspritesheet,
-            &mut backgroundspritebatch,
             &backgroundspritesheet,
-            &mut squirrelspritebatch,
             &squirrelspritesheet
         );
     }

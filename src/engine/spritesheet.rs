@@ -1,5 +1,8 @@
 use glium::texture::SrgbTexture2d;
+use glium::GlObject;
 use engine::Sprite; //I have no idea why this needs to be engine::...
+
+use std::hash::{Hash, Hasher};
 
 pub struct SpriteSheet {
     pub texture: SrgbTexture2d,
@@ -43,3 +46,18 @@ impl SpriteSheet {
         self.coords[index]
     }
 }
+
+impl Hash for SpriteSheet {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.texture.get_id().hash(state);
+    }
+}
+
+
+impl PartialEq for SpriteSheet {
+    fn eq(&self, other: &SpriteSheet) -> bool {
+        self.texture.get_id() == other.texture.get_id()
+    }
+}
+
+impl Eq for SpriteSheet {}

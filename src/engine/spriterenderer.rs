@@ -68,35 +68,36 @@ impl<'a> SpriteRenderer<'a> {
         &mut self,
         frame: &mut Frame,
         spritebatch: &SpriteBatch,
-        spritesheet: &SpriteSheet,
         camera: &Camera,
     ) {
-        if !spritebatch.indices.is_empty() {
-            self.index_buffer.as_mut_slice().write(&spritebatch.indices);
-            self.vertex_buffer.as_mut_slice().write(&spritebatch.quads);
+        for (key,value) in spritebatch.draw_calls.iter() {
+            if !value.indices.is_empty() {
+                self.index_buffer.as_mut_slice().write(&value.indices);
+                self.vertex_buffer.as_mut_slice().write(&value.quads);
 
-            // building the uniforms
-            let uniforms = uniform! {
-                world: Into::<[[f32;4];4]>::into(camera.world),
-                view: Into::<[[f32;4];4]>::into(camera.view),
-                projection: Into::<[[f32;4];4]>::into(camera.ortho),
-                tex: spritesheet.texture.sampled().magnify_filter(MagnifySamplerFilter::Nearest)
-            };
+                // building the uniforms
+                let uniforms = uniform! {
+                    world: Into::<[[f32;4];4]>::into(camera.world),
+                    view: Into::<[[f32;4];4]>::into(camera.view),
+                    projection: Into::<[[f32;4];4]>::into(camera.ortho),
+                    tex: key.texture.sampled().magnify_filter(MagnifySamplerFilter::Nearest)
+                };
 
-            //let vb_slice = self.vertex_buffer.slice(0 .. spritebatch.quads.len()).unwrap();
-            let ib_slice = self.index_buffer
-                .slice(0..spritebatch.indices.len())
-                .unwrap();
+                //let vb_slice = self.vertex_buffer.slice(0 .. spritebatch.quads.len()).unwrap();
+                let ib_slice = self.index_buffer
+                    .slice(0..value.indices.len())
+                    .unwrap();
 
-            frame
-                .draw(
-                    &self.vertex_buffer,
-                    &ib_slice,
-                    &self.program,
-                    &uniforms,
-                    &self.draw_parameters,
-                )
-                .unwrap();
+                frame
+                    .draw(
+                        &self.vertex_buffer,
+                        &ib_slice,
+                        &self.program,
+                        &uniforms,
+                        &self.draw_parameters,
+                    )
+                    .unwrap();
+            }
         }
     }
 }

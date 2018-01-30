@@ -1,16 +1,26 @@
 use engine::{BoundingBox, Camera, SpriteSheet, Vertex};
+use std::collections::HashMap;
 
-pub struct SpriteBatch {
+pub struct DrawCall { 
     pub quads: Vec<Vertex>,
     pub indices: Vec<u32>, /* TODO make internals private
                             * Render via trait */
 }
 
-impl SpriteBatch {
-    pub fn new() -> SpriteBatch {
+impl DrawCall { 
+    fn new() -> DrawCall {
+        DrawCall { quads : Vec::new(), indices : Vec::new() }
+    }
+}
+
+pub struct SpriteBatch<'a> {
+    pub draw_calls : HashMap<&'a SpriteSheet, DrawCall> //TODO Hide internals
+}
+
+impl <'a> SpriteBatch<'a> {
+    pub fn new() -> SpriteBatch<'a> {
         SpriteBatch {
-            quads: Vec::new(),
-            indices: Vec::new(),
+            draw_calls : HashMap::new()
         }
     }
 
@@ -20,41 +30,51 @@ impl SpriteBatch {
         x: f32,
         y: f32,
         sprite_index: usize,
-        spritesheet: &SpriteSheet,
+        spritesheet: &'a SpriteSheet,
         camera: &Camera,
     ) {
         let sprite = spritesheet.coords(sprite_index);
         let sprite_boundingbox = BoundingBox::new(x, y, sprite.width, sprite.height);
         if camera.boundingbox.intersects(&sprite_boundingbox) {
-            let i = self.quads.len() as u32;
-            self.quads.push(Vertex {
+            let calls = self.draw_calls.get_mut(spritesheet);
+            
+            let mut draw_calls = 
+                if let Some(calls) = calls {
+                    *calls
+                } else {
+                    DrawCall::new()
+                };
+
+            let i = draw_calls.quads.len() as u32;
+            draw_calls.quads.push(Vertex {
                 position: [x, y],
                 tex_coord: sprite.tex_coords[0],
             });
-            self.quads.push(Vertex {
+            draw_calls.quads.push(Vertex {
                 position: [x, y + sprite.height],
                 tex_coord: sprite.tex_coords[1],
             });
-            self.quads.push(Vertex {
+            draw_calls.quads.push(Vertex {
                 position: [x + sprite.width, y + sprite.height],
                 tex_coord: sprite.tex_coords[2],
             });
-            self.quads.push(Vertex {
+            draw_calls.quads.push(Vertex {
                 position: [x + sprite.width, y],
                 tex_coord: sprite.tex_coords[3],
             });
 
-            self.indices.push(i);
-            self.indices.push(i + 1);
-            self.indices.push(i + 2);
-            self.indices.push(i);
-            self.indices.push(i + 3);
-            self.indices.push(i + 2);
+            draw_calls.indices.push(i);
+            draw_calls.indices.push(i + 1);
+            draw_calls.indices.push(i + 2);
+            draw_calls.indices.push(i);
+            draw_calls.indices.push(i + 3);
+            draw_calls.indices.push(i + 2);
+
+            self.draw_calls.insert(spritesheet, draw_calls);
         }
     }
 
     pub fn clear(&mut self) {
-        self.indices.clear();
-        self.quads.clear();
+        //self.draw_calls.clear();
     }
 }
