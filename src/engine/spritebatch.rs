@@ -1,6 +1,8 @@
 use engine::{BoundingBox, Camera, SpriteSheet, Vertex};
 use std::collections::HashMap;
+use std::rc::Rc;
 
+#[derive(Clone)]
 pub struct DrawCall { 
     pub quads: Vec<Vertex>,
     pub indices: Vec<u32>, /* TODO make internals private
@@ -13,12 +15,12 @@ impl DrawCall {
     }
 }
 
-pub struct SpriteBatch<'a> {
-    pub draw_calls : HashMap<&'a SpriteSheet, DrawCall> //TODO Hide internals
+pub struct SpriteBatch {
+    pub draw_calls : HashMap<Rc<SpriteSheet>, DrawCall> //TODO Hide internals
 }
 
-impl <'a> SpriteBatch<'a> {
-    pub fn new() -> SpriteBatch<'a> {
+impl SpriteBatch {
+    pub fn new() -> SpriteBatch {
         SpriteBatch {
             draw_calls : HashMap::new()
         }
@@ -30,20 +32,20 @@ impl <'a> SpriteBatch<'a> {
         x: f32,
         y: f32,
         sprite_index: usize,
-        spritesheet: &'a SpriteSheet,
+        spritesheet: Rc<SpriteSheet>,
         camera: &Camera,
     ) {
         let sprite = spritesheet.coords(sprite_index);
         let sprite_boundingbox = BoundingBox::new(x, y, sprite.width, sprite.height);
         if camera.boundingbox.intersects(&sprite_boundingbox) {
-            let calls = self.draw_calls.get_mut(spritesheet);
             
-            let mut draw_calls = 
-                if let Some(calls) = calls {
-                    *calls
-                } else {
-                    DrawCall::new()
-                };
+            let mut draw_calls = {
+                let calls = self.draw_calls.get(&spritesheet);
+                match calls {
+                    Some(calls) => calls.clone(),
+                    None => DrawCall::new()
+                }
+            };
 
             let i = draw_calls.quads.len() as u32;
             draw_calls.quads.push(Vertex {
@@ -75,6 +77,6 @@ impl <'a> SpriteBatch<'a> {
     }
 
     pub fn clear(&mut self) {
-        //self.draw_calls.clear();
+        self.draw_calls.clear();
     }
 }

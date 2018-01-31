@@ -11,6 +11,7 @@ mod squirrel;
 mod direction;
 
 use std::time::SystemTime;
+use std::rc::Rc;
 
 use glium::{glutin, Display, Surface};
 use glium::texture::SrgbTexture2d;
@@ -19,17 +20,17 @@ use engine::{Audio, Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet
 use player::Player;
 use squirrel::Squirrel;
 
-fn draw<'a>(
+fn draw(
     display: &Display,
     player: &mut Player,
     squirrels:&mut [Squirrel],
     camera: &mut Camera,
     controller: &Controller,
     spriterenderer: &mut SpriteRenderer,
-    spritebatch: &'a mut SpriteBatch<'a>,
-    spritesheet: &'a SpriteSheet,
-    backgroundspritesheet: &'a SpriteSheet,
-    squirrelspritesheet : &'a SpriteSheet
+    spritebatch: &mut SpriteBatch,
+    spritesheet: Rc<SpriteSheet>,
+    backgroundspritesheet: Rc<SpriteSheet>,
+    squirrelspritesheet : Rc<SpriteSheet>
 ) {
     let update_time = SystemTime::now();
     spritebatch.clear();
@@ -45,7 +46,7 @@ fn draw<'a>(
                 x + ((16 * x1) as f32),
                 y + ((16 * y1) as f32),
                 0,
-                backgroundspritesheet,
+                backgroundspritesheet.clone(),
                 camera,
             );
         }
@@ -58,7 +59,7 @@ fn draw<'a>(
         squirrel.x,
         squirrel.y,
         squirrel.current_animation.current_frame,
-        squirrelspritesheet,
+        squirrelspritesheet.clone(),
         camera,
     )
     }
@@ -100,10 +101,14 @@ fn main() {
     let background = load_texture("./Assets/Graphics/Background.png", &display);
     let squirrel = load_texture("./Assets/Graphics/Squirrel.png", &display);
 
-    let playerspritesheet = SpriteSheet::new(player, 4, 5);
     let mut spritebatch = SpriteBatch::new();
+    let playerspritesheet = SpriteSheet::new(player, 4, 5);
     let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
     let squirrelspritesheet = SpriteSheet::new(squirrel, 4, 4);
+
+    let playerspritesheet = Rc::new(playerspritesheet);
+    let backgroundspritesheet = Rc::new(backgroundspritesheet);
+    let squirrelspritesheet = Rc::new(squirrelspritesheet);
 
     let mut spriterenderer = SpriteRenderer::new(&display);
     let mut controller = Controller::new();
@@ -145,6 +150,11 @@ fn main() {
             }
         });
 
+        
+        let playerspritesheet = playerspritesheet.clone();
+        let backgroundspritesheet = backgroundspritesheet.clone();
+        let squirrelspritesheet = squirrelspritesheet.clone();
+
         draw(
             &display,
             &mut player,
@@ -153,9 +163,9 @@ fn main() {
             &controller,
             &mut spriterenderer,
             &mut spritebatch,
-            &playerspritesheet,
-            &backgroundspritesheet,
-            &squirrelspritesheet
+            playerspritesheet,
+            backgroundspritesheet,
+            squirrelspritesheet
         );
     }
 }
