@@ -1,10 +1,9 @@
 extern crate glium;
 
-use glium::{Display, DrawParameters, Frame, IndexBuffer, Program, Surface, VertexBuffer};
+use glium::{Depth, Display, DrawParameters, Frame, IndexBuffer, Program, Surface, VertexBuffer};
 use glium::index::PrimitiveType;
 use glium::uniforms::MagnifySamplerFilter;
 use engine::SpriteBatch;
-use engine::SpriteSheet;
 use engine::Camera;
 use engine::Vertex;
 
@@ -24,12 +23,12 @@ impl<'a> SpriteRenderer<'a> {
                 uniform mat4 world;
                 uniform mat4 projection;
                 uniform mat4 view;
-                in vec2 position;
+                in vec3 position;
                 in vec2 tex_coord;
                 out vec2 v_texcoord;
                 void main() {
                     mat4 wvp = world * view * projection;
-                    gl_Position = wvp * vec4(position, 0.0, 1.0);
+                    gl_Position = wvp * vec4(position.xyz, 1.0);
                     v_texcoord = tex_coord;
                 }
             ",
@@ -53,6 +52,12 @@ impl<'a> SpriteRenderer<'a> {
 
         let draw_parameters = DrawParameters {
             blend: glium::Blend::alpha_blending(),
+            depth: glium::Depth {
+                test: glium::draw_parameters::DepthTest::IfMore,
+                write: true,
+                ..Default::default()
+            },
+            backface_culling: glium::BackfaceCullingMode::CullingDisabled,
             ..Default::default()
         };
 

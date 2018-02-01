@@ -31,6 +31,7 @@ impl SpriteBatch {
         &mut self,
         x: f32,
         y: f32,
+        z: f32,
         sprite_index: usize,
         spritesheet: Rc<SpriteSheet>,
         camera: &Camera,
@@ -38,7 +39,7 @@ impl SpriteBatch {
         let sprite = spritesheet.coords(sprite_index);
         let sprite_boundingbox = BoundingBox::new(x, y, sprite.width, sprite.height);
         if camera.boundingbox.intersects(&sprite_boundingbox) {
-            
+            let z = -z;
             let mut draw_calls = {
                 let calls = self.draw_calls.get(&spritesheet);
                 match calls {
@@ -49,19 +50,19 @@ impl SpriteBatch {
 
             let i = draw_calls.quads.len() as u32;
             draw_calls.quads.push(Vertex {
-                position: [x, y],
+                position: [x, y, z],
                 tex_coord: sprite.tex_coords[0],
             });
             draw_calls.quads.push(Vertex {
-                position: [x, y + sprite.height],
+                position: [x, y + sprite.height, z],
                 tex_coord: sprite.tex_coords[1],
             });
             draw_calls.quads.push(Vertex {
-                position: [x + sprite.width, y + sprite.height],
+                position: [x + sprite.width, y + sprite.height, z],
                 tex_coord: sprite.tex_coords[2],
             });
             draw_calls.quads.push(Vertex {
-                position: [x + sprite.width, y],
+                position: [x + sprite.width, y, z],
                 tex_coord: sprite.tex_coords[3],
             });
 

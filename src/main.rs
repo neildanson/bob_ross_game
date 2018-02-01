@@ -45,6 +45,7 @@ fn draw(
             spritebatch.add(
                 x + ((16 * x1) as f32),
                 y + ((16 * y1) as f32),
+                1.0,
                 0,
                 backgroundspritesheet.clone(),
                 camera,
@@ -58,6 +59,7 @@ fn draw(
         spritebatch.add(
         squirrel.x,
         squirrel.y,
+        3.0,
         squirrel.current_animation.current_frame,
         squirrelspritesheet.clone(),
         camera,
@@ -68,13 +70,14 @@ fn draw(
     spritebatch.add(
         player.x,
         player.y,
+        5.0,
         player.current_animation.current_frame,
         spritesheet,
         camera,
     );
 
     let mut target = display.draw();
-    target.clear_color(0.0, 0.0, 0.0, 0.0);
+    target.clear_color_and_depth((0.0, 0.0, 0.0, 0.0), 0.0);
 
     spriterenderer.draw(&mut target, spritebatch, camera);
 
@@ -103,7 +106,7 @@ fn main() {
 
     let mut spritebatch = SpriteBatch::new();
     let playerspritesheet = SpriteSheet::new(player, 4, 5);
-    let backgroundspritesheet = SpriteSheet::new(background, 4, 4);
+    let backgroundspritesheet = SpriteSheet::new(background, 4, 5);
     let squirrelspritesheet = SpriteSheet::new(squirrel, 4, 4);
 
     let playerspritesheet = Rc::new(playerspritesheet);
