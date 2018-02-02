@@ -4,14 +4,16 @@ use std::rc::Rc;
 
 #[derive(Clone)]
 pub struct DrawCall {
+    pub depth : f32,
     pub quads: Vec<Vertex>,
     pub indices: Vec<u32>, /* TODO make internals private
                             * Render via trait */
 }
 
 impl DrawCall {
-    fn new() -> DrawCall {
+    fn new(depth:f32) -> DrawCall {
         DrawCall {
+            depth : depth,
             quads: Vec::new(),
             indices: Vec::new(),
         }
@@ -42,30 +44,29 @@ impl SpriteBatch {
         let sprite = spritesheet.coords(sprite_index);
         let sprite_boundingbox = BoundingBox::new(x, y, sprite.width, sprite.height);
         if camera.boundingbox.intersects(&sprite_boundingbox) {
-            let z = -z;
             let mut draw_calls = {
                 let calls = self.draw_calls.get(&spritesheet);
                 match calls {
                     Some(calls) => calls.clone(),
-                    None => DrawCall::new(),
+                    None => DrawCall::new(-z),
                 }
             };
 
             let i = draw_calls.quads.len() as u32;
             draw_calls.quads.push(Vertex {
-                position: [x, y, z],
+                position: [x, y],
                 tex_coord: sprite.tex_coords[0],
             });
             draw_calls.quads.push(Vertex {
-                position: [x, y + sprite.height, z],
+                position: [x, y + sprite.height],
                 tex_coord: sprite.tex_coords[1],
             });
             draw_calls.quads.push(Vertex {
-                position: [x + sprite.width, y + sprite.height, z],
+                position: [x + sprite.width, y + sprite.height],
                 tex_coord: sprite.tex_coords[2],
             });
             draw_calls.quads.push(Vertex {
-                position: [x + sprite.width, y, z],
+                position: [x + sprite.width, y],
                 tex_coord: sprite.tex_coords[3],
             });
 

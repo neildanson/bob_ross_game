@@ -26,12 +26,13 @@ impl<'a> SpriteRenderer<'a> {
                 uniform mat4 world;
                 uniform mat4 projection;
                 uniform mat4 view;
-                in vec3 position;
+                uniform float depth;
+                in vec2 position;
                 in vec2 tex_coord;
                 out vec2 v_texcoord;
                 void main() {
                     mat4 wvp = world * view * projection;
-                    gl_Position = wvp * vec4(position.xyz, 1.0);
+                    gl_Position = wvp * vec4(position.xy, depth, 1.0);
                     v_texcoord = tex_coord;
                 }
             ",
@@ -49,9 +50,9 @@ impl<'a> SpriteRenderer<'a> {
         },
         ).unwrap();
 
-        let vertex_buffer = VertexBuffer::empty_dynamic(display, 20_000).unwrap();
+        let vertex_buffer = VertexBuffer::empty_dynamic(display, 6_000).unwrap();
         let index_buffer =
-            IndexBuffer::empty_dynamic(display, PrimitiveType::TrianglesList, 20_000).unwrap();
+            IndexBuffer::empty_dynamic(display, PrimitiveType::TrianglesList, 18_000).unwrap();
 
         let draw_parameters = DrawParameters {
             blend: Blend::alpha_blending(),
@@ -83,7 +84,8 @@ impl<'a> SpriteRenderer<'a> {
                     world: Into::<[[f32;4];4]>::into(camera.world),
                     view: Into::<[[f32;4];4]>::into(camera.view),
                     projection: Into::<[[f32;4];4]>::into(camera.ortho),
-                    tex: key.texture.sampled().magnify_filter(MagnifySamplerFilter::Nearest)
+                    tex: key.texture.sampled().magnify_filter(MagnifySamplerFilter::Nearest),
+                    depth: value.depth
                 };
 
                 //let vb_slice = self.vertex_buffer.slice(0 .. spritebatch.quads.len()).unwrap();
