@@ -2,14 +2,13 @@ use engine::{Animation, Audio, Controller};
 use std::time::SystemTime;
 use direction::Direction;
 
-
 pub struct Player {
     pub x: f32,
     pub y: f32,
     pub current_animation: Animation,
     animations: [Animation; 5],
     direction: Direction,
-    audio : Audio,
+    audio: Audio,
 }
 
 impl Player {
@@ -17,9 +16,9 @@ impl Player {
         let audio = Audio::new("./Assets/Audio/Walk.wav");
 
         let animations = [
-            Animation::new(0, 4, 100),   //Walk Right
+            Animation::new(0, 4, 100),  //Walk Right
             Animation::new(4, 4, 200),  //Walk Down
-            Animation::new(8, 4, 100),   //Walk Left
+            Animation::new(8, 4, 100),  //Walk Left
             Animation::new(12, 4, 200), //Walk Up
             Animation::new(16, 2, 500), //Idle
         ];
@@ -29,7 +28,7 @@ impl Player {
             direction: Direction::Right,
             current_animation: animations[4],
             animations: animations,
-            audio : audio
+            audio: audio,
         }
     }
 

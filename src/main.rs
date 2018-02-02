@@ -23,14 +23,14 @@ use squirrel::Squirrel;
 fn draw(
     display: &Display,
     player: &mut Player,
-    squirrels:&mut [Squirrel],
+    squirrels: &mut [Squirrel],
     camera: &mut Camera,
     controller: &Controller,
     spriterenderer: &mut SpriteRenderer,
     spritebatch: &mut SpriteBatch,
     spritesheet: Rc<SpriteSheet>,
     backgroundspritesheet: Rc<SpriteSheet>,
-    squirrelspritesheet : Rc<SpriteSheet>
+    squirrelspritesheet: Rc<SpriteSheet>,
 ) {
     let update_time = SystemTime::now();
     spritebatch.clear();
@@ -57,13 +57,13 @@ fn draw(
     for squirrel in &mut squirrels.into_iter() {
         squirrel.update(update_time);
         spritebatch.add(
-        squirrel.x,
-        squirrel.y,
-        3.0,
-        squirrel.current_animation.current_frame,
-        squirrelspritesheet.clone(),
-        camera,
-    )
+            squirrel.x,
+            squirrel.y,
+            3.0,
+            squirrel.current_animation.current_frame,
+            squirrelspritesheet.clone(),
+            camera,
+        )
     }
 
     //Draw player
@@ -119,7 +119,7 @@ fn main() {
 
     let mut player = Player::new();
     let mut squirrels = Vec::new();
-    for _ in 0 .. 5000 {
+    for _ in 0..5000 {
         squirrels.push(Squirrel::new());
     }
 
@@ -153,7 +153,6 @@ fn main() {
             }
         });
 
-        
         let playerspritesheet = playerspritesheet.clone();
         let backgroundspritesheet = backgroundspritesheet.clone();
         let squirrelspritesheet = squirrelspritesheet.clone();
@@ -168,7 +167,7 @@ fn main() {
             &mut spritebatch,
             playerspritesheet,
             backgroundspritesheet,
-            squirrelspritesheet
+            squirrelspritesheet,
         );
     }
 }

@@ -1,6 +1,7 @@
 extern crate glium;
 
-use glium::{Blend, Depth, Display, DrawParameters, Frame, IndexBuffer, Program, Surface, VertexBuffer};
+use glium::{Blend, Depth, Display, DrawParameters, Frame, IndexBuffer, Program, Surface,
+            VertexBuffer};
 use glium::index::PrimitiveType;
 use glium::BackfaceCullingMode;
 use glium::draw_parameters::DepthTest;
@@ -71,13 +72,8 @@ impl<'a> SpriteRenderer<'a> {
         }
     }
 
-    pub fn draw(
-        &mut self,
-        frame: &mut Frame,
-        spritebatch: &SpriteBatch,
-        camera: &Camera,
-    ) {
-        for (key,value) in spritebatch.draw_calls.iter() {
+    pub fn draw(&mut self, frame: &mut Frame, spritebatch: &SpriteBatch, camera: &Camera) {
+        for (key, value) in spritebatch.draw_calls.iter() {
             if !value.indices.is_empty() {
                 self.index_buffer.as_mut_slice().write(&value.indices);
                 self.vertex_buffer.as_mut_slice().write(&value.quads);
@@ -91,9 +87,7 @@ impl<'a> SpriteRenderer<'a> {
                 };
 
                 //let vb_slice = self.vertex_buffer.slice(0 .. spritebatch.quads.len()).unwrap();
-                let ib_slice = self.index_buffer
-                    .slice(0..value.indices.len())
-                    .unwrap();
+                let ib_slice = self.index_buffer.slice(0..value.indices.len()).unwrap();
 
                 frame
                     .draw(

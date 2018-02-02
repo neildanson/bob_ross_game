@@ -3,26 +3,29 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 #[derive(Clone)]
-pub struct DrawCall { 
+pub struct DrawCall {
     pub quads: Vec<Vertex>,
     pub indices: Vec<u32>, /* TODO make internals private
                             * Render via trait */
 }
 
-impl DrawCall { 
+impl DrawCall {
     fn new() -> DrawCall {
-        DrawCall { quads : Vec::new(), indices : Vec::new() }
+        DrawCall {
+            quads: Vec::new(),
+            indices: Vec::new(),
+        }
     }
 }
 
 pub struct SpriteBatch {
-    pub draw_calls : HashMap<Rc<SpriteSheet>, DrawCall> //TODO Hide internals
+    pub draw_calls: HashMap<Rc<SpriteSheet>, DrawCall>, //TODO Hide internals
 }
 
 impl SpriteBatch {
     pub fn new() -> SpriteBatch {
         SpriteBatch {
-            draw_calls : HashMap::new()
+            draw_calls: HashMap::new(),
         }
     }
 
@@ -44,7 +47,7 @@ impl SpriteBatch {
                 let calls = self.draw_calls.get(&spritesheet);
                 match calls {
                     Some(calls) => calls.clone(),
-                    None => DrawCall::new()
+                    None => DrawCall::new(),
                 }
             };
 

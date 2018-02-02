@@ -53,7 +53,6 @@ impl Hash for SpriteSheet {
     }
 }
 
-
 impl PartialEq for SpriteSheet {
     fn eq(&self, other: &SpriteSheet) -> bool {
         self.texture.get_id() == other.texture.get_id()
