@@ -1,7 +1,9 @@
 extern crate glium;
 
-use glium::{Depth, Display, DrawParameters, Frame, IndexBuffer, Program, Surface, VertexBuffer};
+use glium::{Blend, Depth, Display, DrawParameters, Frame, IndexBuffer, Program, Surface, VertexBuffer};
 use glium::index::PrimitiveType;
+use glium::BackfaceCullingMode;
+use glium::draw_parameters::DepthTest;
 use glium::uniforms::MagnifySamplerFilter;
 use engine::SpriteBatch;
 use engine::Camera;
@@ -51,13 +53,13 @@ impl<'a> SpriteRenderer<'a> {
             IndexBuffer::empty_dynamic(display, PrimitiveType::TrianglesList, 20_000).unwrap();
 
         let draw_parameters = DrawParameters {
-            blend: glium::Blend::alpha_blending(),
-            depth: glium::Depth {
-                test: glium::draw_parameters::DepthTest::IfMore,
+            blend: Blend::alpha_blending(),
+            depth: Depth {
+                test: DepthTest::IfMore,
                 write: true,
                 ..Default::default()
             },
-            backface_culling: glium::BackfaceCullingMode::CullingDisabled,
+            backface_culling: BackfaceCullingMode::CullingDisabled,
             ..Default::default()
         };
 
