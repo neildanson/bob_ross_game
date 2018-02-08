@@ -18,7 +18,7 @@ pub struct Squirrel {
 
 impl Squirrel {
     pub fn new() -> Squirrel {
-        let between = Range::new(0, 500 * 16);
+        let between = Range::new(0, 50 * 16);
         let mut rng = thread_rng();
         let pos_x = between.ind_sample(&mut rng) as f32 ;
         let pos_y = between.ind_sample(&mut rng) as f32;

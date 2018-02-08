@@ -1,13 +1,13 @@
-use glium::texture::SrgbTexture2d;
+use glium::Texture2d;
 use engine::Sprite; //I have no idea why this needs to be engine::...
 
 pub struct SpriteSheet {
-    pub texture: SrgbTexture2d,
+    pub texture: Texture2d,
     coords: Vec<Sprite>,
 }
 
 impl SpriteSheet {
-    pub fn new(texture: SrgbTexture2d, num_x_tiles: u32, num_y_tiles: u32) -> SpriteSheet {
+    pub fn new(texture: Texture2d, num_x_tiles: u32, num_y_tiles: u32) -> SpriteSheet {
         let mut coords = Vec::new();
         let tex_width = texture.width() as f32;
         let tex_height = texture.height() as f32;

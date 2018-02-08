@@ -13,7 +13,7 @@ mod direction;
 use std::time::SystemTime;
 
 use glium::{glutin, Display, Surface};
-use glium::texture::SrgbTexture2d;
+use glium::Texture2d;
 
 use engine::{Audio, Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet};
 use player::Player;
@@ -43,8 +43,8 @@ fn draw(
     //Draw background
     let x = 0.0f32;
     let y = 0.0f32;
-    for x1 in 0..500 {
-        for y1 in 0..500 {
+    for x1 in 0..50 {
+        for y1 in 0..50 {
             backgroundpritebatch.add(
                 x + ((16 * x1) as f32),
                 y + ((16 * y1) as f32),
@@ -90,12 +90,12 @@ fn draw(
     target.finish().unwrap();
 }
 
-fn load_texture(filename: &str, display: &Display) -> SrgbTexture2d {
+fn load_texture(filename: &str, display: &Display) -> Texture2d {
     let path = std::path::Path::new(&filename);
     let image = image::open(&path).unwrap().to_rgba();
     let image_dimensions = image.dimensions();
     let image = glium::texture::RawImage2d::from_raw_rgba(image.into_raw(), image_dimensions);
-    SrgbTexture2d::new(display, image).unwrap()
+    Texture2d::new(display, image).unwrap()
 }
 
 fn main() {
@@ -123,7 +123,7 @@ fn main() {
 
     let mut player = Player::new();
     let mut squirrels = Vec::new();
-    for _ in 0 .. 5000 {
+    for _ in 0 .. 50 {
         squirrels.push(Squirrel::new());
     }
 
