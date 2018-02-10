@@ -2,7 +2,7 @@ extern crate rodio;
 
 use std::io::BufReader;
 use std::fs::File;
-use self::rodio::Source;
+use rodio::*;
 
 
 pub struct Audio {
@@ -11,7 +11,7 @@ pub struct Audio {
 
 impl Audio {
     pub fn new(filename : &str) -> Audio {
-        let endpoint = rodio::get_default_endpoint().unwrap();
+        let endpoint = rodio::default_endpoint().unwrap();
         let sink = rodio::Sink::new(&endpoint);
 
         let file = File::open(filename).unwrap();
