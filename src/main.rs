@@ -3,6 +3,7 @@ extern crate cgmath;
 extern crate glium;
 extern crate image;
 extern crate rand;
+extern crate rodio;
 
 //#![windows_subsystem = "windows"]
 mod engine;
