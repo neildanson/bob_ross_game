@@ -4,16 +4,14 @@ use std::rc::Rc;
 
 #[derive(Clone)]
 pub struct DrawCall {
-    pub depth : f32,
     pub quads: Vec<Vertex>,
     pub indices: Vec<u32>, /* TODO make internals private
                             * Render via trait */
 }
 
 impl DrawCall {
-    fn new(depth:f32) -> DrawCall {
+    fn new() -> DrawCall {
         DrawCall {
-            depth : depth,
             quads: Vec::new(),
             indices: Vec::new(),
         }
@@ -21,7 +19,7 @@ impl DrawCall {
 }
 
 pub struct SpriteBatch {
-    pub draw_calls: HashMap<Rc<SpriteSheet>, DrawCall>, //TODO Hide internals
+    pub draw_calls: HashMap<(i32, Rc<SpriteSheet>), DrawCall>, //TODO Hide internals
 }
 
 impl SpriteBatch {
@@ -36,7 +34,7 @@ impl SpriteBatch {
         &mut self,
         x: f32,
         y: f32,
-        z: f32,
+        z: i32,
         sprite_index: usize,
         spritesheet: Rc<SpriteSheet>,
         camera: &Camera,
@@ -45,10 +43,10 @@ impl SpriteBatch {
         let sprite_boundingbox = BoundingBox::new(x, y, sprite.width, sprite.height);
         if camera.boundingbox.intersects(&sprite_boundingbox) {
             let mut draw_calls = {
-                let calls = self.draw_calls.get(&spritesheet);
+                let calls = self.draw_calls.get(&(z, spritesheet.clone()));
                 match calls {
                     Some(calls) => calls.clone(),
-                    None => DrawCall::new(-z),
+                    None => DrawCall::new(),
                 }
             };
 
@@ -76,8 +74,9 @@ impl SpriteBatch {
             draw_calls.indices.push(i);
             draw_calls.indices.push(i + 3);
             draw_calls.indices.push(i + 2);
+            let spritesheet = spritesheet.clone();
 
-            self.draw_calls.insert(spritesheet, draw_calls);
+            self.draw_calls.insert((z, spritesheet), draw_calls);
         }
     }
 

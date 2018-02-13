@@ -32,7 +32,7 @@ impl<'a> SpriteRenderer<'a> {
                 out vec2 v_texcoord;
                 void main() {
                     mat4 wvp = world * view * projection;
-                    gl_Position = wvp * vec4(position.xy, depth, 1.0);
+                    gl_Position = wvp * vec4(position.xy, -depth, 1.0);
                     v_texcoord = tex_coord;
                 }
             ",
@@ -74,18 +74,30 @@ impl<'a> SpriteRenderer<'a> {
     }
 
     pub fn draw(&mut self, frame: &mut Frame, spritebatch: &SpriteBatch, camera: &Camera) {
-        for (key, value) in spritebatch.draw_calls.iter() {
+        let mut ordered = spritebatch.draw_calls.iter().collect::<Vec<_>>();
+
+        ordered.sort_by(|kvp1, kvp2| {
+            let (k, _) = *kvp1;
+            let (l,_) = *kvp2;
+            let &(k, ref s) = k;
+            let &(l, ref t) = l;
+            k.cmp(&l).then(s.cmp(&t))
+        });
+
+        for (key, value) in ordered.into_iter() {
             if !value.indices.is_empty() {
                 self.index_buffer.as_mut_slice().write(&value.indices);
                 self.vertex_buffer.as_mut_slice().write(&value.quads);
+                let &(depth, ref spritesheet) = key;
+                let depth = depth as f32;
 
                 // building the uniforms
                 let uniforms = uniform! {
                     world: Into::<[[f32;4];4]>::into(camera.world),
                     view: Into::<[[f32;4];4]>::into(camera.view),
                     projection: Into::<[[f32;4];4]>::into(camera.ortho),
-                    tex: key.texture.sampled().magnify_filter(MagnifySamplerFilter::Nearest),
-                    depth: value.depth
+                    tex: spritesheet.texture.sampled().magnify_filter(MagnifySamplerFilter::Nearest),
+                    depth: depth
                 };
 
                 //let vb_slice = self.vertex_buffer.slice(0 .. spritebatch.quads.len()).unwrap();

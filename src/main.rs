@@ -46,7 +46,7 @@ fn draw(
             spritebatch.add(
                 x + ((16 * x1) as f32),
                 y + ((16 * y1) as f32),
-                1.0,
+                1,
                 0,
                 backgroundspritesheet.clone(),
                 camera,
@@ -60,7 +60,7 @@ fn draw(
         spritebatch.add(
             squirrel.x,
             squirrel.y,
-            3.0,
+            3,
             squirrel.current_animation.current_frame,
             squirrelspritesheet.clone(),
             camera,
@@ -71,7 +71,7 @@ fn draw(
     spritebatch.add(
         player.x,
         player.y,
-        5.0,
+        5,
         player.current_animation.current_frame,
         spritesheet,
         camera,

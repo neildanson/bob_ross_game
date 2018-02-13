@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use glium::texture::SrgbTexture2d;
 use glium::GlObject;
 use engine::Sprite; //I have no idea why this needs to be engine::...
@@ -60,3 +61,15 @@ impl PartialEq for SpriteSheet {
 }
 
 impl Eq for SpriteSheet {}
+
+impl Ord for SpriteSheet {
+    fn cmp (&self, other: &SpriteSheet) -> Ordering {
+        self.texture.get_id().cmp(&other.texture.get_id())
+    }
+}
+
+impl PartialOrd for SpriteSheet {
+    fn partial_cmp(&self, other: &SpriteSheet) -> Option<Ordering> {
+        Some(self.texture.get_id().cmp(&other.texture.get_id()))
+    }
+}
