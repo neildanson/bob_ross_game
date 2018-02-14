@@ -3,6 +3,7 @@ use rand::distributions::{IndependentSample, Range};
 use std::time::SystemTime;
 use engine::Animation;
 use direction::Direction;
+use constants::*;
 
 pub struct Squirrel {
     pub x: f32,
@@ -18,7 +19,7 @@ pub struct Squirrel {
 
 impl Squirrel {
     pub fn new() -> Squirrel {
-        let between = Range::new(0, 500 * 16);
+        let between = Range::new(0, MAP_SIZE * MAP_SIZE_SCALED);
         let mut rng = thread_rng();
         let pos_x = between.ind_sample(&mut rng) as f32;
         let pos_y = between.ind_sample(&mut rng) as f32;
@@ -47,22 +48,22 @@ impl Squirrel {
     pub fn update(&mut self, update_time: SystemTime) {
         let delta_x = if self.x < self.target_x {
             self.direction = Direction::Left;
-            1.0
+            SQUIRREL_SPEED
         } else {
             if self.x > self.target_x {
                 self.direction = Direction::Right;
-                -1.0
+                -SQUIRREL_SPEED
             } else {
                 0.0
             }
         };
         let delta_y = if self.y < self.target_y {
             self.direction = Direction::Down;
-            1.0
+            SQUIRREL_SPEED
         } else {
             if self.y > self.target_y {
                 self.direction = Direction::Up;
-                -1.0
+                -SQUIRREL_SPEED
             } else {
                 0.0
             }

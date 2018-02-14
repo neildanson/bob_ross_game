@@ -6,6 +6,7 @@ extern crate rand;
 extern crate rodio;
 
 //#![windows_subsystem = "windows"]
+mod constants;
 mod engine;
 mod player;
 mod squirrel;
@@ -41,12 +42,12 @@ fn draw(
     //Draw background
     let x = 0.0f32;
     let y = 0.0f32;
-    for x1 in 0..500 {
-        for y1 in 0..500 {
+    for x1 in 0..constants::MAP_SIZE {
+        for y1 in 0..constants::MAP_SIZE {
             spritebatch.add(
                 x + ((16 * x1) as f32),
                 y + ((16 * y1) as f32),
-                1,
+                constants::BACKGROUND_LAYER,
                 0,
                 backgroundspritesheet.clone(),
                 camera,
@@ -60,7 +61,7 @@ fn draw(
         spritebatch.add(
             squirrel.x,
             squirrel.y,
-            3,
+            constants::ENEMY_LAYER,
             squirrel.current_animation.current_frame,
             squirrelspritesheet.clone(),
             camera,
@@ -71,7 +72,7 @@ fn draw(
     spritebatch.add(
         player.x,
         player.y,
-        5,
+        constants::PLAYER_LAYER,
         player.current_animation.current_frame,
         spritesheet,
         camera,

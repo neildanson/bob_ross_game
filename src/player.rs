@@ -1,6 +1,7 @@
 use engine::{Animation, Audio, Controller};
 use std::time::SystemTime;
 use direction::Direction;
+use constants::{PLAYER_SPEED, MAP_SIZE_SCALED};
 
 pub struct Player {
     pub x: f32,
@@ -38,7 +39,7 @@ impl Player {
         self.x = if controller.left {
             key_pressed = true;
             self.direction = Direction::Left;
-            self.x - 2.0
+            self.x - PLAYER_SPEED
         } else {
             self.x
         };
@@ -46,7 +47,7 @@ impl Player {
         self.x = if controller.right {
             key_pressed = true;
             self.direction = Direction::Right;
-            self.x + 2.0
+            self.x + PLAYER_SPEED
         } else {
             self.x
         };
@@ -54,7 +55,7 @@ impl Player {
         self.y = if controller.up {
             key_pressed = true;
             self.direction = Direction::Up;
-            self.y - 2.0
+            self.y - PLAYER_SPEED
         } else {
             self.y
         };
@@ -62,10 +63,24 @@ impl Player {
         self.y = if controller.down {
             key_pressed = true;
             self.direction = Direction::Down;
-            self.y + 2.0
+            self.y + PLAYER_SPEED
         } else {
             self.y
         };
+
+        if self.x < 0.0 {
+            self.x = 0.0
+        }
+        if self.x > MAP_SIZE_SCALED as f32 {
+            self.x = MAP_SIZE_SCALED as f32;
+        }
+
+        if self.y < 0.0 {
+            self.y = 0.0
+        }
+        if self.y > MAP_SIZE_SCALED as f32 {
+            self.y = MAP_SIZE_SCALED as f32;
+        }
 
         if !key_pressed {
             self.current_animation = self.animations[4];
