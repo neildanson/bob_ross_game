@@ -78,7 +78,7 @@ impl<'a> SpriteRenderer<'a> {
 
         ordered.sort_by(|kvp1, kvp2| {
             let (k, _) = *kvp1;
-            let (l,_) = *kvp2;
+            let (l, _) = *kvp2;
             let &(k, ref s) = k;
             let &(l, ref t) = l;
             k.cmp(&l).then(s.cmp(&t))

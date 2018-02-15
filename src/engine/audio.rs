@@ -9,7 +9,7 @@ pub struct Audio {
 }
 
 impl Audio {
-    pub fn new(filename : &str) -> Audio {
+    pub fn new(filename: &str) -> Audio {
         let endpoint = rodio::default_endpoint().unwrap();
         let sink = rodio::Sink::new(&endpoint);
 

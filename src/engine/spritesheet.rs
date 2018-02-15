@@ -65,7 +65,7 @@ impl PartialEq for SpriteSheet {
 impl Eq for SpriteSheet {}
 
 impl Ord for SpriteSheet {
-    fn cmp (&self, other: &SpriteSheet) -> Ordering {
+    fn cmp(&self, other: &SpriteSheet) -> Ordering {
         self.texture.get_id().cmp(&other.texture.get_id())
     }
 }

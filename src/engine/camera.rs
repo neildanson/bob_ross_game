@@ -17,7 +17,14 @@ impl Camera {
     pub fn new(width: u32, height: u32) -> Camera {
         let world = Matrix4::identity();
         let view = Matrix4::identity();
-        let projection = cgmath::ortho(0.0f32, width as f32, height as f32, 0.0f32, 0.0f32, 100.0f32);
+        let projection = cgmath::ortho(
+            0.0f32,
+            width as f32,
+            height as f32,
+            0.0f32,
+            0.0f32,
+            100.0f32,
+        );
         let x = 0;
         let y = 0;
         Camera {
@@ -38,7 +45,8 @@ impl Camera {
         let x = self.x - self.width / 2.0;
         {
             let y = self.y - self.height / 2.0;
-            self.boundingbox = BoundingBox::new(x as i32, y as i32, self.width as u32, self.height as u32);
+            self.boundingbox =
+                BoundingBox::new(x as i32, y as i32, self.width as u32, self.height as u32);
         }
         let y = self.y + self.height / 2.0;
 

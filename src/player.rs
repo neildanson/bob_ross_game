@@ -1,7 +1,7 @@
 use engine::{Animation, Audio, Controller};
 use std::time::SystemTime;
 use direction::Direction;
-use constants::{PLAYER_SPEED, MAP_SIZE_SCALED};
+use constants::{MAP_SIZE_SCALED, PLAYER_SPEED};
 
 pub struct Player {
     pub x: i32,
