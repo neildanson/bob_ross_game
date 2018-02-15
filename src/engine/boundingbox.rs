@@ -1,17 +1,17 @@
 pub struct BoundingBox {
-    x: f32,
-    y: f32,
-    x1: f32,
-    y1: f32,
+    x: i32,
+    y: i32,
+    x1: i32,
+    y1: i32,
 }
 
 impl BoundingBox {
-    pub fn new(x: f32, y: f32, width: f32, height: f32) -> BoundingBox {
+    pub fn new(x: i32, y: i32, width: u32, height: u32) -> BoundingBox {
         BoundingBox {
             x: x,
             y: y,
-            x1: x + width,
-            y1: y + height,
+            x1: x + width as i32,
+            y1: y + height as i32,
         }
     }
 
@@ -42,16 +42,16 @@ mod tests {
     use super::*;
     #[test]
     fn test1() {
-        let bounding_box1 = BoundingBox::new(-160.0, -120.0, 320.0, 240.0);
-        let bounding_box2 = BoundingBox::new(0.0, 0.0, 16.0, 16.0);
+        let bounding_box1 = BoundingBox::new(-160, -120, 320, 240);
+        let bounding_box2 = BoundingBox::new(0, 0, 16, 16);
         assert_eq!(bounding_box1.intersects(&bounding_box2), true);
         assert_eq!(bounding_box2.intersects(&bounding_box1), true);
     }
 
     #[test]
     fn test2() {
-        let bounding_box1 = BoundingBox::new(-160.0, -120.0, 320.0, 240.0);
-        let bounding_box2 = BoundingBox::new(-100.0, -100.0, 16.0, 16.0);
+        let bounding_box1 = BoundingBox::new(-160, -120, 320, 240);
+        let bounding_box2 = BoundingBox::new(-100, -100, 16, 16);
         assert_eq!(bounding_box1.intersects(&bounding_box2), true);
         assert_eq!(bounding_box2.intersects(&bounding_box1), true);
     }

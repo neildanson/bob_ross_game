@@ -40,13 +40,13 @@ fn draw(
     camera.look_at(player.x, player.y);
 
     //Draw background
-    let x = 0.0f32;
-    let y = 0.0f32;
+    let x = 0;
+    let y = 0;
     for x1 in 0..constants::MAP_SIZE {
         for y1 in 0..constants::MAP_SIZE {
             spritebatch.add(
-                x + ((16 * x1) as f32),
-                y + ((16 * y1) as f32),
+                x + ((16 * x1)),
+                y + ((16 * y1)),
                 constants::BACKGROUND_LAYER,
                 0,
                 backgroundspritesheet.clone(),
@@ -117,11 +117,11 @@ fn main() {
 
     let mut spriterenderer = SpriteRenderer::new(&display);
     let mut controller = Controller::new();
-    let mut camera = Camera::new(320.0, 240.0);
+    let mut camera = Camera::new(constants::SCREEN_WIDTH, constants::SCREEN_HEIGHT);
 
     let mut player = Player::new();
     let mut squirrels = Vec::new();
-    for _ in 0..5000 {
+    for _ in 0..constants::NUM_SQUIRRELS {
         squirrels.push(Squirrel::new());
     }
 

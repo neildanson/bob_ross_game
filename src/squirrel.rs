@@ -6,12 +6,12 @@ use direction::Direction;
 use constants::*;
 
 pub struct Squirrel {
-    pub x: f32,
-    pub y: f32,
+    pub x: i32,
+    pub y: i32,
     between: Range<i32>,
     rng: ThreadRng,
-    target_x: f32,
-    target_y: f32,
+    target_x: i32,
+    target_y: i32,
     animations: [Animation; 4],
     direction: Direction,
     pub current_animation: Animation,
@@ -19,10 +19,10 @@ pub struct Squirrel {
 
 impl Squirrel {
     pub fn new() -> Squirrel {
-        let between = Range::new(0, MAP_SIZE * MAP_SIZE_SCALED);
+        let between = Range::new(0, MAP_SIZE_SCALED);
         let mut rng = thread_rng();
-        let pos_x = between.ind_sample(&mut rng) as f32;
-        let pos_y = between.ind_sample(&mut rng) as f32;
+        let pos_x = between.ind_sample(&mut rng);
+        let pos_y = between.ind_sample(&mut rng);
 
         let animations = [
             Animation::new(0, 4, 100),  //Walk Right
@@ -30,8 +30,8 @@ impl Squirrel {
             Animation::new(8, 4, 100),  //Walk Left
             Animation::new(12, 4, 200), //Walk Up
         ];
-        let target_x = between.ind_sample(&mut rng) as f32;
-        let target_y = between.ind_sample(&mut rng) as f32;
+        let target_x = between.ind_sample(&mut rng);
+        let target_y = between.ind_sample(&mut rng);
         Squirrel {
             x: pos_x,
             y: pos_y,
@@ -54,7 +54,7 @@ impl Squirrel {
                 self.direction = Direction::Right;
                 -SQUIRREL_SPEED
             } else {
-                0.0
+                0
             }
         };
         let delta_y = if self.y < self.target_y {
@@ -65,7 +65,7 @@ impl Squirrel {
                 self.direction = Direction::Up;
                 -SQUIRREL_SPEED
             } else {
-                0.0
+                0
             }
         };
 
@@ -80,8 +80,8 @@ impl Squirrel {
         let y = self.y + delta_y;
 
         if x as i32 == self.target_x as i32 && y as i32 == self.target_y as i32 {
-            self.target_x = self.between.ind_sample(&mut self.rng) as f32;
-            self.target_y = self.between.ind_sample(&mut self.rng) as f32;
+            self.target_x = self.between.ind_sample(&mut self.rng);
+            self.target_y = self.between.ind_sample(&mut self.rng);
         }
         self.x = x;
         self.y = y;

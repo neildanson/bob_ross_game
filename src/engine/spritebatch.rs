@@ -32,8 +32,8 @@ impl SpriteBatch {
     //TODO - add a reference to the spritesheet!
     pub fn add(
         &mut self,
-        x: f32,
-        y: f32,
+        x: i32,
+        y: i32,
         z: i32,
         sprite_index: usize,
         spritesheet: Rc<SpriteSheet>,
@@ -52,19 +52,19 @@ impl SpriteBatch {
 
             let i = draw_calls.quads.len() as u32;
             draw_calls.quads.push(Vertex {
-                position: [x, y],
+                position: [x as f32, y as f32],
                 tex_coord: sprite.tex_coords[0],
             });
             draw_calls.quads.push(Vertex {
-                position: [x, y + sprite.height],
+                position: [x as f32, y as f32 + sprite.height as f32],
                 tex_coord: sprite.tex_coords[1],
             });
             draw_calls.quads.push(Vertex {
-                position: [x + sprite.width, y + sprite.height],
+                position: [x as f32 + sprite.width as f32, y as f32 + sprite.height as f32],
                 tex_coord: sprite.tex_coords[2],
             });
             draw_calls.quads.push(Vertex {
-                position: [x + sprite.width, y],
+                position: [x as f32 + sprite.width as f32, y as f32],
                 tex_coord: sprite.tex_coords[3],
             });
 

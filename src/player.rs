@@ -4,8 +4,8 @@ use direction::Direction;
 use constants::{PLAYER_SPEED, MAP_SIZE_SCALED};
 
 pub struct Player {
-    pub x: f32,
-    pub y: f32,
+    pub x: i32,
+    pub y: i32,
     pub current_animation: Animation,
     animations: [Animation; 5],
     direction: Direction,
@@ -24,8 +24,8 @@ impl Player {
             Animation::new(16, 2, 500), //Idle
         ];
         Player {
-            x: 0.0,
-            y: 0.0,
+            x: 0,
+            y: 0,
             direction: Direction::Right,
             current_animation: animations[4],
             animations: animations,
@@ -68,18 +68,18 @@ impl Player {
             self.y
         };
 
-        if self.x < 0.0 {
-            self.x = 0.0
+        if self.x < 0 {
+            self.x = 0
         }
-        if self.x > MAP_SIZE_SCALED as f32 {
-            self.x = MAP_SIZE_SCALED as f32;
+        if self.x > MAP_SIZE_SCALED {
+            self.x = MAP_SIZE_SCALED;
         }
 
-        if self.y < 0.0 {
-            self.y = 0.0
+        if self.y < 0 {
+            self.y = 0
         }
-        if self.y > MAP_SIZE_SCALED as f32 {
-            self.y = MAP_SIZE_SCALED as f32;
+        if self.y > MAP_SIZE_SCALED {
+            self.y = MAP_SIZE_SCALED;
         }
 
         if !key_pressed {
