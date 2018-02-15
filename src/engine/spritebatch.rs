@@ -52,22 +52,22 @@ impl SpriteBatch {
 
             let i = draw_calls.quads.len() as u32;
             draw_calls.quads.push(Vertex {
-                position: [x as f32, y as f32],
+                position: [x, y],
                 tex_coord: sprite.tex_coords[0],
             });
             draw_calls.quads.push(Vertex {
-                position: [x as f32, y as f32 + sprite.height as f32],
+                position: [x, y + sprite.height as i32],
                 tex_coord: sprite.tex_coords[1],
             });
             draw_calls.quads.push(Vertex {
                 position: [
-                    x as f32 + sprite.width as f32,
-                    y as f32 + sprite.height as f32,
+                    x + sprite.width as i32,
+                    y + sprite.height as i32,
                 ],
                 tex_coord: sprite.tex_coords[2],
             });
             draw_calls.quads.push(Vertex {
-                position: [x as f32 + sprite.width as f32, y as f32],
+                position: [x + sprite.width as i32, y as i32],
                 tex_coord: sprite.tex_coords[3],
             });
 

@@ -1,6 +1,6 @@
 #[derive(Copy, Clone)]
 pub struct Vertex {
-    pub position: [f32; 2],
+    pub position: [i32; 2],
     pub tex_coord: [f32; 2],
 }
 
