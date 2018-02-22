@@ -1,7 +1,7 @@
 use rand::*;
 use rand::distributions::{IndependentSample, Range};
 use std::time::SystemTime;
-use engine::{Animation, Entity};
+use engine::{Animation, AnimationType, Entity};
 use direction::Direction;
 use constants::*;
 
@@ -46,21 +46,21 @@ impl Squirrel {
         let pos_y = between.ind_sample(&mut rng);
 
         let animations = [
-            Animation::new(0, 4, 100),  //Walk Right
-            Animation::new(4, 4, 200),  //Walk Down
-            Animation::new(8, 4, 100),  //Walk Left
-            Animation::new(12, 4, 200), //Walk Up
+            Animation::new(AnimationType::Loop, 0, 4, 100),  //Walk Right
+            Animation::new(AnimationType::Loop, 4, 4, 200),  //Walk Down
+            Animation::new(AnimationType::Loop, 8, 4, 100),  //Walk Left
+            Animation::new(AnimationType::Loop, 12, 4, 200), //Walk Up
         ];
         let target_x = between.ind_sample(&mut rng);
         let target_y = between.ind_sample(&mut rng);
         let state = State::Alive (pos_x, pos_y, target_x, target_y, animations[0]);
         
         Squirrel {
-            state: state,
-            between: between,
-            rng: rng,
+            state,
+            between,
+            rng,
             direction: Direction::Left,
-            animations: animations,
+            animations,
             current_animation: animations[0],
         }
     }

@@ -1,7 +1,14 @@
 use std::time::{Duration, SystemTime};
 
 #[derive(Copy, Clone)]
+pub enum AnimationType {
+    Loop,
+    Once
+}
+
+#[derive(Copy, Clone)]
 pub struct Animation {
+    animation_type : AnimationType,
     pub current_frame: usize,
     base_frame: usize,
     num_frames: usize,
@@ -10,10 +17,11 @@ pub struct Animation {
 }
 
 impl Animation {
-    pub fn new(base_frame: usize, num_frames: usize, frame_interfal_in_ms: u64) -> Animation {
+    pub fn new(animation_type : AnimationType,  base_frame: usize, num_frames: usize, frame_interfal_in_ms: u64) -> Animation {
         Animation {
-            num_frames: num_frames,
-            base_frame: base_frame,
+            animation_type,
+            num_frames,
+            base_frame,
             current_frame: base_frame,
             last_update_time: SystemTime::now(),
             frame_interval: Duration::from_millis(frame_interfal_in_ms),
@@ -26,7 +34,10 @@ impl Animation {
             self.current_frame = if self.current_frame < self.base_frame + self.num_frames - 1 {
                 self.current_frame + 1
             } else {
-                self.base_frame
+                match self.animation_type {
+                    AnimationType::Loop => self.base_frame,
+                    AnimationType::Once => self.current_frame
+                }
             }
         }
     }

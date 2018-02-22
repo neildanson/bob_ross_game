@@ -11,6 +11,7 @@ mod audio;
 mod entity;
 
 pub use self::animation::Animation;
+pub use self::animation::AnimationType;
 pub use self::boundingbox::BoundingBox;
 pub use self::camera::Camera;
 pub use self::controller::Controller;

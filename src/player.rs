@@ -1,4 +1,4 @@
-use engine::{Animation, Audio, Controller};
+use engine::{Animation, AnimationType, Audio, Controller};
 use std::time::SystemTime;
 use direction::Direction;
 use constants::{MAP_SIZE_SCALED, PLAYER_SPEED};
@@ -17,11 +17,11 @@ impl Player {
         let audio = Audio::new("./Assets/Audio/Walk.wav");
 
         let animations = [
-            Animation::new(0, 4, 100),  //Walk Right
-            Animation::new(4, 4, 200),  //Walk Down
-            Animation::new(8, 4, 100),  //Walk Left
-            Animation::new(12, 4, 200), //Walk Up
-            Animation::new(16, 2, 500), //Idle
+            Animation::new(AnimationType::Loop, 0, 4, 100),  //Walk Right
+            Animation::new(AnimationType::Loop, 4, 4, 200),  //Walk Down
+            Animation::new(AnimationType::Loop, 8, 4, 100),  //Walk Left
+            Animation::new(AnimationType::Loop, 12, 4, 200), //Walk Up
+            Animation::new(AnimationType::Loop, 16, 2, 500), //Idle
         ];
         Player {
             x: 0,
