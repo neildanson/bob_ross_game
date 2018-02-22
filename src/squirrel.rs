@@ -7,20 +7,20 @@ use constants::*;
 
 enum State {
     Alive(i32, i32, i32, i32, Animation),
-    Dead(i32, i32, Animation)
+    Dead(i32, i32, Animation),
 }
 
 impl State {
     fn position(&self) -> (i32, i32) {
         match *self {
-            State::Alive(x,y,..) => (x,y),
-            State::Dead(x,y,..) => (x,y)
+            State::Alive(x, y, ..) => (x, y),
+            State::Dead(x, y, ..) => (x, y),
         }
     }
 }
 
 pub struct Squirrel {
-    state : State,
+    state: State,
     between: Range<i32>,
     rng: ThreadRng,
     animations: [Animation; 4],
@@ -46,15 +46,15 @@ impl Squirrel {
         let pos_y = between.ind_sample(&mut rng);
 
         let animations = [
-            Animation::new(AnimationType::Loop, 0, 4, 100),  //Walk Right
-            Animation::new(AnimationType::Loop, 4, 4, 200),  //Walk Down
-            Animation::new(AnimationType::Loop, 8, 4, 100),  //Walk Left
+            Animation::new(AnimationType::Loop, 0, 4, 100), //Walk Right
+            Animation::new(AnimationType::Loop, 4, 4, 200), //Walk Down
+            Animation::new(AnimationType::Loop, 8, 4, 100), //Walk Left
             Animation::new(AnimationType::Loop, 12, 4, 200), //Walk Up
         ];
         let target_x = between.ind_sample(&mut rng);
         let target_y = between.ind_sample(&mut rng);
-        let state = State::Alive (pos_x, pos_y, target_x, target_y, animations[0]);
-        
+        let state = State::Alive(pos_x, pos_y, target_x, target_y, animations[0]);
+
         Squirrel {
             state,
             between,
@@ -67,7 +67,7 @@ impl Squirrel {
 
     pub fn update(&mut self, update_time: SystemTime) {
         match self.state {
-            State::Alive(x,y, mut target_x, mut target_y, animation) =>{
+            State::Alive(x, y, mut target_x, mut target_y, animation) => {
                 let delta_x = if x < target_x {
                     self.direction = Direction::Left;
                     SQUIRREL_SPEED
@@ -105,14 +105,14 @@ impl Squirrel {
                     target_x = self.between.ind_sample(&mut self.rng);
                     target_y = self.between.ind_sample(&mut self.rng);
                 }
-                
-                self.state = State::Alive(x,y,target_x, target_y, animation);
+
+                self.state = State::Alive(x, y, target_x, target_y, animation);
 
                 for a in &mut self.animations {
                     a.update(update_time);
                 }
-            },
-            _ => () //TODO DEATH
+            }
+            _ => (), //TODO DEATH
         }
     }
 }

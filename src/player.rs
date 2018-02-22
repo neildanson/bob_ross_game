@@ -17,9 +17,9 @@ impl Player {
         let audio = Audio::new("./Assets/Audio/Walk.wav");
 
         let animations = [
-            Animation::new(AnimationType::Loop, 0, 4, 100),  //Walk Right
-            Animation::new(AnimationType::Loop, 4, 4, 200),  //Walk Down
-            Animation::new(AnimationType::Loop, 8, 4, 100),  //Walk Left
+            Animation::new(AnimationType::Loop, 0, 4, 100), //Walk Right
+            Animation::new(AnimationType::Loop, 4, 4, 200), //Walk Down
+            Animation::new(AnimationType::Loop, 8, 4, 100), //Walk Left
             Animation::new(AnimationType::Loop, 12, 4, 200), //Walk Up
             Animation::new(AnimationType::Loop, 16, 2, 500), //Idle
         ];

@@ -3,12 +3,12 @@ use std::time::{Duration, SystemTime};
 #[derive(Copy, Clone)]
 pub enum AnimationType {
     Loop,
-    Once
+    Once,
 }
 
 #[derive(Copy, Clone)]
 pub struct Animation {
-    animation_type : AnimationType,
+    animation_type: AnimationType,
     pub current_frame: usize,
     base_frame: usize,
     num_frames: usize,
@@ -17,7 +17,12 @@ pub struct Animation {
 }
 
 impl Animation {
-    pub fn new(animation_type : AnimationType,  base_frame: usize, num_frames: usize, frame_interfal_in_ms: u64) -> Animation {
+    pub fn new(
+        animation_type: AnimationType,
+        base_frame: usize,
+        num_frames: usize,
+        frame_interfal_in_ms: u64,
+    ) -> Animation {
         Animation {
             animation_type,
             num_frames,
@@ -36,7 +41,7 @@ impl Animation {
             } else {
                 match self.animation_type {
                     AnimationType::Loop => self.base_frame,
-                    AnimationType::Once => self.current_frame
+                    AnimationType::Once => self.current_frame,
                 }
             }
         }

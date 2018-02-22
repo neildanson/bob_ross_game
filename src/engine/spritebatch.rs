@@ -60,10 +60,7 @@ impl SpriteBatch {
                 tex_coord: sprite.tex_coords[1],
             });
             draw_calls.quads.push(Vertex {
-                position: [
-                    x + sprite.width as i32,
-                    y + sprite.height as i32,
-                ],
+                position: [x + sprite.width as i32, y + sprite.height as i32],
                 tex_coord: sprite.tex_coords[2],
             });
             draw_calls.quads.push(Vertex {

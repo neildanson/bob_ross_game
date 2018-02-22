@@ -58,7 +58,7 @@ fn draw(
     //Draw Squirrels
     for squirrel in &mut squirrels.into_iter() {
         squirrel.update(update_time);
-        let (x,y) = squirrel.position();
+        let (x, y) = squirrel.position();
         spritebatch.add(
             x,
             y,
