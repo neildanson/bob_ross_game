@@ -18,7 +18,7 @@ use std::rc::Rc;
 use glium::{glutin, Display, Surface};
 use glium::texture::SrgbTexture2d;
 
-use engine::{Audio, Camera, Controller, SpriteBatch, SpriteRenderer, SpriteSheet};
+use engine::{Audio, Camera, Controller, Entity, SpriteBatch, SpriteRenderer, SpriteSheet};
 use player::Player;
 use squirrel::Squirrel;
 
@@ -58,11 +58,12 @@ fn draw(
     //Draw Squirrels
     for squirrel in &mut squirrels.into_iter() {
         squirrel.update(update_time);
+        let (x,y) = squirrel.position();
         spritebatch.add(
-            squirrel.x,
-            squirrel.y,
+            x,
+            y,
             constants::ENEMY_LAYER,
-            squirrel.current_animation.current_frame,
+            squirrel.animation_index(),
             squirrelspritesheet.clone(),
             camera,
         )

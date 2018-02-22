@@ -8,6 +8,7 @@ mod spritesheet;
 mod vertex;
 mod boundingbox;
 mod audio;
+mod entity;
 
 pub use self::animation::Animation;
 pub use self::boundingbox::BoundingBox;
@@ -19,3 +20,4 @@ pub use self::spriterenderer::SpriteRenderer;
 pub use self::spritesheet::SpriteSheet;
 pub use self::vertex::Vertex;
 pub use self::audio::Audio;
+pub use self::entity::Entity;
