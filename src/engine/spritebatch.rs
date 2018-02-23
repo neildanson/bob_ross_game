@@ -36,7 +36,7 @@ impl SpriteBatch {
         y: i32,
         z: i32,
         sprite_index: usize,
-        spritesheet: Rc<SpriteSheet>,
+        spritesheet: &Rc<SpriteSheet>,
         camera: &Camera,
     ) {
         let sprite = spritesheet.coords(sprite_index);

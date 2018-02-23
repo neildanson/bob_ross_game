@@ -71,24 +71,20 @@ impl Squirrel {
                 let delta_x = if x < target_x {
                     self.direction = Direction::Left;
                     SQUIRREL_SPEED
+                } else if x > target_x {
+                    self.direction = Direction::Right;
+                    -SQUIRREL_SPEED
                 } else {
-                    if x > target_x {
-                        self.direction = Direction::Right;
-                        -SQUIRREL_SPEED
-                    } else {
-                        0
-                    }
+                    0
                 };
                 let delta_y = if y < target_y {
                     self.direction = Direction::Down;
                     SQUIRREL_SPEED
+                } else  if y > target_y {
+                    self.direction = Direction::Up;
+                    -SQUIRREL_SPEED
                 } else {
-                    if y > target_y {
-                        self.direction = Direction::Up;
-                        -SQUIRREL_SPEED
-                    } else {
-                        0
-                    }
+                    0
                 };
 
                 self.current_animation = match self.direction {

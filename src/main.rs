@@ -45,11 +45,11 @@ fn draw(
     for x1 in 0..constants::MAP_SIZE {
         for y1 in 0..constants::MAP_SIZE {
             spritebatch.add(
-                x + ((16 * x1)),
-                y + ((16 * y1)),
+                x + (16 * x1),
+                y + (16 * y1),
                 constants::BACKGROUND_LAYER,
                 0,
-                backgroundspritesheet.clone(),
+                &backgroundspritesheet,
                 camera,
             );
         }
@@ -64,7 +64,7 @@ fn draw(
             y,
             constants::ENEMY_LAYER,
             squirrel.animation_index(),
-            squirrelspritesheet.clone(),
+            &squirrelspritesheet,
             camera,
         )
     }
@@ -75,7 +75,7 @@ fn draw(
         player.y,
         constants::PLAYER_LAYER,
         player.current_animation.current_frame,
-        spritesheet,
+        &spritesheet,
         camera,
     );
 

@@ -83,7 +83,7 @@ impl<'a> SpriteRenderer<'a> {
             k.cmp(&l).then(s.cmp(&t))
         });
 
-        for &mut kvp in ordered.iter_mut() {
+        for kvp in &mut ordered {
             let key = kvp.0;
             let mut value = kvp.1;
             let mut quads = &value.quads;
